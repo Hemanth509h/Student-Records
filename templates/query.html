@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}Query Interface - Student Records{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-search me-2"></i>SQL-like Query Interface
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="query" class="form-label">
+                            <i class="fas fa-code me-1"></i>Enter your query:
+                        </label>
+                        <textarea class="form-control font-monospace" id="query" name="query" rows="3" 
+                                  placeholder="SELECT * FROM students WHERE avg_grade > 80 ORDER BY name"
+                                  required>{{ query_text }}</textarea>
+                        <div class="form-text">
+                            Enter SQL-like queries to search and filter student records
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-1"></i>Execute Query
+                        </button>
+                        
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#samplesModal">
+                                <i class="fas fa-lightbulb me-1"></i>Sample Queries
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="clearQuery()">
+                                <i class="fas fa-eraser me-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Query Results -->
+{% if results is defined %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-table me-2"></i>Query Results
+                </h5>
+                <span class="badge bg-primary">{{ results|length }} records found</span>
+            </div>
+            <div class="card-body">
+                {% if results %}
+                    {% if results[0].get('group') %}
+                        <!-- Grouped Results -->
+                        <div class="accordion" id="groupedResults">
+                            {% for group in results %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                    <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" 
+                                            type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#collapse{{ loop.index }}">
+                                        <strong>{{ group.group }}</strong>
+                                        <span class="badge bg-secondary ms-2">{{ group.count }} students</span>
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ loop.index }}" 
+                                     class="accordion-collapse collapse {% if loop.first %}show{% endif %}" 
+                                     data-bs-parent="#groupedResults">
+                                    <div class="accordion-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Roll No</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Courses</th>
+                                                        <th>Grades</th>
+                                                        <th>Avg Grade</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for student in group.students %}
+                                                    <tr>
+                                                        <td><span class="badge bg-primary">{{ student.roll_no }}</span></td>
+                                                        <td>{{ student.name }}</td>
+                                                        <td><small>{{ student.email }}</small></td>
+                                                        <td>
+                                                            {% for course in student.courses %}
+                                                                <span class="badge bg-secondary me-1">{{ course }}</span>
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>
+                                                            {% for grade in student.grades %}
+                                                                <span class="badge bg-{% if grade >= 90 %}success{% elif grade >= 80 %}info{% elif grade >= 70 %}warning{% else %}danger{% endif %} me-1">
+                                                                    {{ grade }}
+                                                                </span>
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>
+                                                            {% set avg_grade = (student.grades | sum) / (student.grades | length) if student.grades else 0 %}
+                                                            <span class="badge bg-{% if avg_grade >= 90 %}success{% elif avg_grade >= 80 %}info{% elif avg_grade >= 70 %}warning{% else %}danger{% endif %}">
+                                                                {{ "%.1f"|format(avg_grade) }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Regular Results -->
+                        <div class="table-responsive">
+                            <table class="table table-dark table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        {% if results[0].get('roll_no') %}
+                                            <th>Roll No</th>
+                                        {% endif %}
+                                        {% if results[0].get('name') %}
+                                            <th>Name</th>
+                                        {% endif %}
+                                        {% if results[0].get('email') %}
+                                            <th>Email</th>
+                                        {% endif %}
+                                        {% if results[0].get('courses') %}
+                                            <th>Courses</th>
+                                        {% endif %}
+                                        {% if results[0].get('grades') %}
+                                            <th>Grades</th>
+                                        {% endif %}
+                                        {% if results[0].get('avg_grade') %}
+                                            <th>Avg Grade</th>
+                                        {% endif %}
+                                        {% if results[0].get('course_count') %}
+                                            <th>Course Count</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in results %}
+                                    <tr>
+                                        {% if row.get('roll_no') %}
+                                            <td><span class="badge bg-primary">{{ row.roll_no }}</span></td>
+                                        {% endif %}
+                                        {% if row.get('name') %}
+                                            <td><strong>{{ row.name }}</strong></td>
+                                        {% endif %}
+                                        {% if row.get('email') %}
+                                            <td><small class="text-muted">{{ row.email }}</small></td>
+                                        {% endif %}
+                                        {% if row.get('courses') %}
+                                            <td>
+                                                {% if row.courses is string %}
+                                                    {{ row.courses }}
+                                                {% else %}
+                                                    {% for course in row.courses %}
+                                                        <span class="badge bg-secondary me-1">{{ course }}</span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        {% if row.get('grades') %}
+                                            <td>
+                                                {% if row.grades is string %}
+                                                    {{ row.grades }}
+                                                {% else %}
+                                                    {% for grade in row.grades %}
+                                                        <span class="badge bg-{% if grade >= 90 %}success{% elif grade >= 80 %}info{% elif grade >= 70 %}warning{% else %}danger{% endif %} me-1">
+                                                            {{ grade }}
+                                                        </span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        {% if row.get('avg_grade') %}
+                                            <td>
+                                                <span class="badge bg-{% if row.avg_grade >= 90 %}success{% elif row.avg_grade >= 80 %}info{% elif row.avg_grade >= 70 %}warning{% else %}danger{% endif %}">
+                                                    {{ "%.1f"|format(row.avg_grade) }}
+                                                </span>
+                                            </td>
+                                        {% endif %}
+                                        {% if row.get('course_count') %}
+                                            <td><span class="badge bg-info">{{ row.course_count }}</span></td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No results found</h5>
+                        <p class="text-muted">Try modifying your query or check the syntax</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Sample Queries Modal -->
+<div class="modal fade" id="samplesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-lightbulb me-2"></i>Sample Queries
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Basic Selection</h6>
+                        <code class="d-block mb-2">SELECT * FROM students</code>
+                        <small class="text-muted">Get all students</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Filter by Grade</h6>
+                        <code class="d-block mb-2">SELECT * FROM students WHERE avg_grade > 80</code>
+                        <small class="text-muted">Get students with average grade above 80</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Search by Name</h6>
+                        <code class="d-block mb-2">SELECT * FROM students WHERE name LIKE 'John'</code>
+                        <small class="text-muted">Find students with 'John' in their name</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Grade Range</h6>
+                        <code class="d-block mb-2">SELECT * FROM students WHERE avg_grade >= 70 AND avg_grade <= 90</code>
+                        <small class="text-muted">Students with grades between 70 and 90</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Sort by Grade</h6>
+                        <code class="d-block mb-2">SELECT * FROM students ORDER BY avg_grade DESC</code>
+                        <small class="text-muted">Sort students by grade (highest first)</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Limited Results</h6>
+                        <code class="d-block mb-2">SELECT * FROM students ORDER BY name ASC LIMIT 5</code>
+                        <small class="text-muted">Get first 5 students alphabetically</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Course Filter</h6>
+                        <code class="d-block mb-2">SELECT name FROM students WHERE courses LIKE 'Math'</code>
+                        <small class="text-muted">Students enrolled in Math course</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Group by Course</h6>
+                        <code class="d-block mb-2">GROUP BY courses</code>
+                        <small class="text-muted">Group students by their courses</small>
+                    </div>
+                    
+                    <div class="list-group-item">
+                        <h6 class="mb-1">Multiple Courses</h6>
+                        <code class="d-block mb-2">SELECT * FROM students WHERE course_count > 2</code>
+                        <small class="text-muted">Students enrolled in more than 2 courses</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Reference Card -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Quick Reference
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Available Fields:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>roll_no</code> - Student roll number</li>
+                            <li><code>name</code> - Student name</li>
+                            <li><code>email</code> - Student email</li>
+                            <li><code>courses</code> - Enrolled courses</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Computed Fields:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>grades</code> - All grades</li>
+                            <li><code>avg_grade</code> - Average grade</li>
+                            <li><code>course_count</code> - Number of courses</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Operators:</h6>
+                        <code>=, !=, >, <, >=, <=, LIKE, IN</code>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Logical:</h6>
+                        <code>AND, OR</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function clearQuery() {
+    document.getElementById('query').value = '';
+    document.getElementById('query').focus();
+}
+
+// Add sample query to textarea when clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const codeElements = document.querySelectorAll('#samplesModal code');
+    codeElements.forEach(code => {
+        code.style.cursor = 'pointer';
+        code.addEventListener('click', function() {
+            document.getElementById('query').value = this.textContent;
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('samplesModal'));
+            modal.hide();
+            // Focus on query input
+            document.getElementById('query').focus();
+        });
+    });
+});
+
+// Syntax highlighting (basic)
+document.getElementById('query').addEventListener('input', function() {
+    // Basic highlighting could be added here
+    // For now, just uppercase SQL keywords on blur
+});
+
+document.getElementById('query').addEventListener('blur', function() {
+    const sqlKeywords = ['SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'LIMIT', 'AND', 'OR', 'LIKE', 'IN'];
+    let value = this.value;
+    
+    sqlKeywords.forEach(keyword => {
+        const regex = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'gi');
+        value = value.replace(regex, keyword);
+    });
+    
+    this.value = value;
+});
+</script>
+{% endblock %}

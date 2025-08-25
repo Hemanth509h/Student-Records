@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student - Student Records{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Edit Student: {{ student.name }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="roll_no" class="form-label">
+                                <i class="fas fa-id-badge me-1"></i>Roll Number
+                            </label>
+                            <input type="text" class="form-control" id="roll_no" name="roll_no" 
+                                   value="{{ student.roll_no }}" readonly>
+                            <div class="form-text">Roll number cannot be changed</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-user me-1"></i>Full Name *
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ student.name }}" placeholder="Enter full name" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid name.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-1"></i>Email Address *
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ student.email }}" placeholder="Enter email address" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid email address.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="courses" class="form-label">
+                            <i class="fas fa-book me-1"></i>Courses *
+                        </label>
+                        <input type="text" class="form-control" id="courses" name="courses" 
+                               value="{{ student.courses | join(', ') }}" 
+                               placeholder="Enter courses separated by commas" required>
+                        <div class="form-text">
+                            Enter multiple courses separated by commas
+                        </div>
+                        <div class="invalid-feedback">
+                            Please provide at least one course.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="grades" class="form-label">
+                            <i class="fas fa-chart-line me-1"></i>Grades *
+                        </label>
+                        <input type="text" class="form-control" id="grades" name="grades" 
+                               value="{{ student.grades | join(', ') }}" 
+                               placeholder="Enter grades separated by commas" required>
+                        <div class="form-text">
+                            Enter grades as numbers separated by commas (must match the number of courses)
+                        </div>
+                        <div class="invalid-feedback">
+                            Please provide valid grades.
+                        </div>
+                    </div>
+                    
+                    <!-- Current Information Display -->
+                    <div class="card bg-dark border-secondary mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle me-1"></i>Current Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Roll No:</strong> <span class="badge bg-primary">{{ student.roll_no }}</span></p>
+                                    <p><strong>Name:</strong> {{ student.name }}</p>
+                                    <p><strong>Email:</strong> {{ student.email }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Courses:</strong></p>
+                                    <div class="mb-2">
+                                        {% for course in student.courses %}
+                                            <span class="badge bg-secondary me-1">{{ course }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <p><strong>Grades:</strong></p>
+                                    <div class="mb-2">
+                                        {% for grade in student.grades %}
+                                            <span class="badge bg-{% if grade >= 90 %}success{% elif grade >= 80 %}info{% elif grade >= 70 %}warning{% else %}danger{% endif %} me-1">
+                                                {{ grade }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                    {% set avg_grade = (student.grades | sum) / (student.grades | length) if student.grades else 0 %}
+                                    <p><strong>Average Grade:</strong> 
+                                        <span class="badge bg-{% if avg_grade >= 90 %}success{% elif avg_grade >= 80 %}info{% elif avg_grade >= 70 %}warning{% else %}danger{% endif %}">
+                                            {{ "%.1f"|format(avg_grade) }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Section -->
+                    <div class="card bg-dark border-warning mb-3" id="preview-card" style="display: none;">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">
+                                <i class="fas fa-eye me-1"></i>Preview Changes
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="preview-content"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-info me-2" id="preview-btn">
+                                <i class="fas fa-eye me-1"></i>Preview Changes
+                            </button>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-1"></i>Update Student
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Help Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-1"></i>Edit Guidelines
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li><strong>Roll Number:</strong> Cannot be modified after creation</li>
+                    <li><strong>Courses:</strong> Separate multiple courses with commas</li>
+                    <li><strong>Grades:</strong> Enter numeric values separated by commas</li>
+                    <li><strong>Important:</strong> The number of courses must match the number of grades</li>
+                    <li><strong>Changes:</strong> Use the preview feature to see changes before saving</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Preview functionality
+document.getElementById('preview-btn').addEventListener('click', function() {
+    const rollNo = document.getElementById('roll_no').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const coursesStr = document.getElementById('courses').value.trim();
+    const gradesStr = document.getElementById('grades').value.trim();
+    
+    if (!name || !email || !coursesStr || !gradesStr) {
+        alert('Please fill in all fields to preview');
+        return;
+    }
+    
+    try {
+        const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
+        const grades = gradesStr.split(',').map(g => parseFloat(g.trim())).filter(g => !isNaN(g));
+        
+        if (courses.length !== grades.length) {
+            alert('Number of courses must match number of grades');
+            return;
+        }
+        
+        const avgGrade = grades.reduce((a, b) => a + b, 0) / grades.length;
+        
+        let previewHtml = `
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Roll No:</strong> <span class="badge bg-primary">${rollNo}</span></p>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Updated Courses:</strong></p>
+                    <div class="mb-2">
+        `;
+        
+        courses.forEach(course => {
+            previewHtml += `<span class="badge bg-secondary me-1">${course}</span>`;
+        });
+        
+        previewHtml += `
+                    </div>
+                    <p><strong>Updated Grades:</strong></p>
+                    <div class="mb-2">
+        `;
+        
+        grades.forEach(grade => {
+            const badgeClass = grade >= 90 ? 'success' : grade >= 80 ? 'info' : grade >= 70 ? 'warning' : 'danger';
+            previewHtml += `<span class="badge bg-${badgeClass} me-1">${grade}</span>`;
+        });
+        
+        const avgBadgeClass = avgGrade >= 90 ? 'success' : avgGrade >= 80 ? 'info' : avgGrade >= 70 ? 'warning' : 'danger';
+        previewHtml += `
+                    </div>
+                    <p><strong>New Average Grade:</strong> <span class="badge bg-${avgBadgeClass}">${avgGrade.toFixed(1)}</span></p>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('preview-content').innerHTML = previewHtml;
+        document.getElementById('preview-card').style.display = 'block';
+        
+    } catch (error) {
+        alert('Error generating preview. Please check your input.');
+    }
+});
+
+// Real-time validation feedback
+document.getElementById('courses').addEventListener('input', validateCoursesAndGrades);
+document.getElementById('grades').addEventListener('input', validateCoursesAndGrades);
+
+function validateCoursesAndGrades() {
+    const coursesStr = document.getElementById('courses').value.trim();
+    const gradesStr = document.getElementById('grades').value.trim();
+    
+    if (coursesStr && gradesStr) {
+        const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
+        const grades = gradesStr.split(',').map(g => g.trim()).filter(g => g);
+        
+        const coursesInput = document.getElementById('courses');
+        const gradesInput = document.getElementById('grades');
+        
+        if (courses.length !== grades.length) {
+            coursesInput.setCustomValidity('Number of courses must match number of grades');
+            gradesInput.setCustomValidity('Number of grades must match number of courses');
+        } else {
+            coursesInput.setCustomValidity('');
+            gradesInput.setCustomValidity('');
+        }
+    }
+}
+
+// Highlight changes when user types
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['name', 'email', 'courses', 'grades'];
+    const originalValues = {
+        name: '{{ student.name }}',
+        email: '{{ student.email }}',
+        courses: '{{ student.courses | join(", ") }}',
+        grades: '{{ student.grades | join(", ") }}'
+    };
+    
+    inputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        input.addEventListener('input', function() {
+            if (this.value !== originalValues[inputId]) {
+                this.classList.add('border-warning');
+            } else {
+                this.classList.remove('border-warning');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
