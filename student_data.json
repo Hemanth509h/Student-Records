@@ -1,32 +1,19 @@
 [
   {
-    "roll_no": "CS001",
-    "name": "Alice Johnson",
-    "email": "alice.johnson@university.edu",
-    "courses": [
-      "Computer Science",
-      "Mathematics",
-      "Physics"
-    ],
-    "grades": [
-      92,
-      88,
-      85
-    ]
-  },
-  {
     "roll_no": "CS002",
     "name": "Bob Smith",
     "email": "bob.smith@university.edu",
     "courses": [
       "Computer Science",
       "Statistics",
-      "English"
+      "English",
+      "Machine Learning"
     ],
     "grades": [
       78,
       82,
-      90
+      90,
+      85
     ]
   },
   {
@@ -39,7 +26,7 @@
       "Physics"
     ],
     "grades": [
-      95,
+      98,
       91,
       87
     ]
