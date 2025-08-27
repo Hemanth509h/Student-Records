@@ -2,12 +2,13 @@
 Custom data structures for student record processing
 Implements Linked List and Stack for efficient data manipulation
 """
+from typing import Optional, Any
 
 class Node:
     """Node class for linked list implementation"""
-    def __init__(self, data):
+    def __init__(self, data: Any):
         self.data = data
-        self.next = None
+        self.next: Optional['Node'] = None
 
 class LinkedList:
     """Custom Linked List implementation for student records"""
@@ -302,7 +303,7 @@ class StudentDataProcessor:
             'median_grade': round(median_grade, 2),
             'min_grade': min_grade,
             'max_grade': max_grade,
-            'most_popular_course': max(course_count, key=course_count.get) if course_count else None,
+            'most_popular_course': max(course_count.keys(), key=lambda k: course_count[k]) if course_count else None,
             'course_distribution': course_count
         }
     
