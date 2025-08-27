@@ -134,10 +134,1420 @@
       "Web Development"
     ],
     "grades": [
+      85.0,
+      88.0,
+      92.0,
+      79.0
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
       85,
       88,
       92,
       79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      85,
+      88,
+      92,
+      79
+    ]
+  },
+  {
+    "roll_no": "CS002",
+    "name": "Bob Smith",
+    "email": "bob.smith@university.edu",
+    "courses": [
+      "Computer Science",
+      "Statistics",
+      "English",
+      "Machine Learning"
+    ],
+    "grades": [
+      78,
+      82,
+      90,
+      85
+    ]
+  },
+  {
+    "roll_no": "EE003",
+    "name": "Carol Williams",
+    "email": "carol.williams@university.edu",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      98,
+      91,
+      87
+    ]
+  },
+  {
+    "roll_no": "ME004",
+    "name": "David Brown",
+    "email": "david.brown@university.edu",
+    "courses": [
+      "Mechanical Engineering",
+      "Thermodynamics",
+      "Materials Science"
+    ],
+    "grades": [
+      84,
+      79,
+      86
+    ]
+  },
+  {
+    "roll_no": "CS005",
+    "name": "Emma Davis",
+    "email": "emma.davis@university.edu",
+    "courses": [
+      "Computer Science",
+      "Artificial Intelligence",
+      "Data Structures"
+    ],
+    "grades": [
+      96,
+      94,
+      92
+    ]
+  },
+  {
+    "roll_no": "BIO006",
+    "name": "Frank Miller",
+    "email": "frank.miller@university.edu",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Biochemistry"
+    ],
+    "grades": [
+      73,
+      76,
+      81
+    ]
+  },
+  {
+    "roll_no": "CHEM007",
+    "name": "Grace Wilson",
+    "email": "grace.wilson@university.edu",
+    "courses": [
+      "Chemistry",
+      "Organic Chemistry",
+      "Physical Chemistry"
+    ],
+    "grades": [
+      89,
+      85,
+      91
+    ]
+  },
+  {
+    "roll_no": "MATH008",
+    "name": "Henry Moore",
+    "email": "henry.moore@university.edu",
+    "courses": [
+      "Mathematics",
+      "Calculus",
+      "Linear Algebra",
+      "Statistics"
+    ],
+    "grades": [
+      87,
+      90,
+      93,
+      88
+    ]
+  },
+  {
+    "roll_no": "PHY009",
+    "name": "Ivy Taylor",
+    "email": "ivy.taylor@university.edu",
+    "courses": [
+      "Physics",
+      "Quantum Mechanics",
+      "Thermodynamics"
+    ],
+    "grades": [
+      91,
+      87,
+      83
+    ]
+  },
+  {
+    "roll_no": "CS010",
+    "name": "Jack Anderson",
+    "email": "jack.anderson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Software Engineering",
+      "Database Systems",
+      "Web Development"
+    ],
+    "grades": [
+      35,
+      22,
+      25,
+      45
     ]
   }
 ]
