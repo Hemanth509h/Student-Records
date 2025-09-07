@@ -4,7 +4,7 @@ Student Manager class that handles all student operations using custom data stru
 
 import json
 import os
-from data_structures import LinkedList, Stack, StudentDataProcessor
+from core.data_structures import LinkedList, Stack, StudentDataProcessor
 
 class StudentManager:
     """Manages student records using custom linked list and stack data structures"""
