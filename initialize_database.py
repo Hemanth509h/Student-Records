@@ -5,8 +5,12 @@ Run this script to populate the database with sample student data.
 Use: python initialize_database.py
 """
 
-import os
 import sys
+import os
+
+# Add the core directory to Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'core'))
+
 from core.student_manager import StudentManager
 
 def initialize_sample_data(force_overwrite=False):
@@ -107,41 +111,6 @@ def initialize_sample_data(force_overwrite=False):
             'email': 'jack.anderson@university.edu',
             'courses': ['Computer Science', 'Software Engineering', 'Database Systems', 'Web Development'],
             'grades': [79, 92, 88, 85]
-        },
-        {
-            'roll_no': 'EE011',
-            'name': 'Kate Rodriguez',
-            'email': 'kate.rodriguez@university.edu',
-            'courses': ['Electrical Engineering', 'Circuit Analysis', 'Digital Systems'],
-            'grades': [91, 86, 89]
-        },
-        {
-            'roll_no': 'ME012',
-            'name': 'Liam Chang',
-            'email': 'liam.chang@university.edu',
-            'courses': ['Mechanical Engineering', 'Materials Science', 'Thermodynamics'],
-            'grades': [77, 83, 80]
-        },
-        {
-            'roll_no': 'CS013',
-            'name': 'Maya Patel',
-            'email': 'maya.patel@university.edu',
-            'courses': ['Computer Science', 'Machine Learning', 'Data Science'],
-            'grades': [94, 97, 95]
-        },
-        {
-            'roll_no': 'BIO014',
-            'name': 'Noah Kim',
-            'email': 'noah.kim@university.edu',
-            'courses': ['Biology', 'Genetics', 'Molecular Biology'],
-            'grades': [82, 88, 84]
-        },
-        {
-            'roll_no': 'CHEM015',
-            'name': 'Olivia Thompson',
-            'email': 'olivia.thompson@university.edu',
-            'courses': ['Chemistry', 'Analytical Chemistry', 'Biochemistry'],
-            'grades': [90, 87, 92]
         }
     ]
     
@@ -172,40 +141,7 @@ def initialize_sample_data(force_overwrite=False):
         print(f"   • Failed to add: {failed_count} students")
     print(f"   • Total students in database: {len(manager.get_all_students())}")
     
-    # Display some statistics
-    print(f"\n📈 Quick Statistics:")
-    stats = manager.get_statistics()
-    print(f"   • Average grade: {stats.get('average_grade', 0)}")
-    course_dist = stats.get('course_distribution', {})
-    print(f"   • Total courses: {len(course_dist) if isinstance(course_dist, dict) else 0}")
-    print(f"   • Most popular course: {stats.get('most_popular_course', 'N/A')}")
-    
-    # List top performers
-    top_performers = manager.get_top_performers(3)
-    if top_performers:
-        print(f"\n🏆 Top 3 Performers:")
-        for i, student in enumerate(top_performers, 1):
-            print(f"   {i}. {student['name']} - {student['avg_grade']}")
-    
     print(f"\n🚀 Database is ready! You can now run your application.")
-    return True
-
-def check_dependencies():
-    """Check if all required files and dependencies are available"""
-    required_files = ['core/student_manager.py', 'core/data_structures.py', 'core/query_engine.py']
-    missing_files = []
-    
-    for file in required_files:
-        if not os.path.exists(file):
-            missing_files.append(file)
-    
-    if missing_files:
-        print("❌ Missing required files:")
-        for file in missing_files:
-            print(f"   • {file}")
-        print("\nPlease ensure all project files are in the correct location.")
-        return False
-    
     return True
 
 def main():
@@ -217,10 +153,6 @@ def main():
     # Check for command line arguments
     force_overwrite = len(sys.argv) > 1 and sys.argv[1] == '--force'
     
-    # Check dependencies
-    if not check_dependencies():
-        sys.exit(1)
-    
     try:
         # Initialize the database
         success = initialize_sample_data(force_overwrite)
@@ -228,15 +160,14 @@ def main():
         if success:
             print(f"\n✅ Initialization successful!")
             print(f"You can now:")
-            print(f"  • Run 'python main.py' to start the web application")
-            print(f"  • Run 'python app.py' to start the Flask server")
-            print(f"  • Access the web interface at http://localhost:5000")
+            print(f"  • Access the web interface at the URL shown above")
+            print(f"  • Start adding your own student records")
         else:
             print(f"\n❌ Initialization was cancelled or failed.")
             
     except ImportError as e:
         print(f"❌ Import Error: {e}")
-        print("Make sure all required Python files are in the same directory.")
+        print("Make sure all required Python files are available.")
         sys.exit(1)
     except Exception as e:
         print(f"❌ Unexpected error: {e}")

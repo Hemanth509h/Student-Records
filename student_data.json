@@ -1549,5 +1549,20 @@
       25,
       45
     ]
+  },
+  {
+    "roll_no": "CS001",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@university.edu",
+    "courses": [
+      "Computer Science",
+      "Mathematics",
+      "Physics"
+    ],
+    "grades": [
+      88,
+      92,
+      85
+    ]
   }
 ]
