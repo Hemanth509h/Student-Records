@@ -295,8 +295,8 @@ def reports():
     
     # Overall average
     cur.execute("SELECT AVG(unnest) FROM (SELECT unnest(grades) FROM students) as all_grades")
-    overall_avg = cur.fetchone()[0]
-    overall_avg = round(float(overall_avg), 2) if overall_avg else 0
+    result = cur.fetchone()
+    overall_avg = round(float(result[0]), 2) if result and result[0] else 0
     
     report_data = {
         'total_students': total_students,
