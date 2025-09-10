@@ -8,7 +8,7 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-prod
 
 # Database connection
 def get_db():
-    return psycopg2.connect(os.environ['DATABASE_URL'])
+    return psycopg2.connect(os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/student_management'))
 
 @app.route('/')
 def index():
