@@ -1,4 +1,5 @@
 import os
+import secrets
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Student
@@ -6,18 +7,31 @@ import json
 
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-production")
+app.secret_key = os.environ.get("SESSION_SECRET")
+if not app.secret_key:
+    # Generate a random secret for development only
+    app.secret_key = secrets.token_hex(32)
+    print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/student_management')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///student_management.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
 db.init_app(app)
 
-# Create tables
-with app.app_context():
-    db.create_all()
+# Database initialization function
+def init_db():
+    """Initialize database tables"""
+    with app.app_context():
+        db.create_all()
+
+# Initialize database on startup
+try:
+    init_db()
+except Exception as e:
+    print(f"Warning: Could not initialize database: {e}")
+    print("Database will be created on first use")
 
 @app.route('/')
 def index():
@@ -168,14 +182,24 @@ def query():
         query_text = request.form['query'].strip()
         if query_text:
             try:
-                # Simple query processing with SQLAlchemy
-                if query_text.upper().startswith('SELECT'):
-                    # Use raw SQL for custom queries
-                    result = db.session.execute(db.text(query_text))
-                    results = [list(row) for row in result]
-                    flash(f'Query executed successfully. Found {len(results)} results.', 'success')
+                # Enhanced security for SQL queries
+                query_upper = query_text.upper().strip()
+                if query_upper.startswith('SELECT') and not any(dangerous in query_upper for dangerous in ['DROP', 'DELETE', 'UPDATE', 'INSERT', 'ALTER', 'CREATE', 'TRUNCATE']):
+                    # Limit query length for security
+                    if len(query_text) > 1000:
+                        flash('Query too long. Maximum 1000 characters allowed.', 'error')
+                    else:
+                        # Use raw SQL for custom queries with timeout
+                        result = db.session.execute(db.text(query_text))
+                        results = [list(row) for row in result.fetchall()]
+                        # Limit results to prevent memory issues
+                        if len(results) > 100:
+                            results = results[:100]
+                            flash(f'Query executed successfully. Showing first 100 of {len(results)} results.', 'info')
+                        else:
+                            flash(f'Query executed successfully. Found {len(results)} results.', 'success')
                 else:
-                    flash('Only SELECT queries are allowed', 'error')
+                    flash('Only SELECT queries are allowed. No DDL/DML operations permitted.', 'error')
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
@@ -239,8 +263,18 @@ def reports():
         top_performers.sort(key=lambda x: x['avg_grade'], reverse=True)
         top_performers = top_performers[:5]
         
-        # Low performers
-        low_performers = [p for p in top_performers if p['avg_grade'] < 70]
+        # Low performers - students needing attention (all students with avg < 70)
+        low_performers = []
+        for student in students:
+            avg_grade = student.get_average_grade()
+            if avg_grade < 70:
+                low_performers.append({
+                    'name': student.name,
+                    'roll_no': student.roll_no,
+                    'avg_grade': avg_grade,
+                    'courses': student.courses
+                })
+        
         low_performers.sort(key=lambda x: x['avg_grade'])
         low_performers = low_performers[:10]
         
