@@ -3,9 +3,7 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Student
-from student_repository import StudentRepository
-from sqlalchemy_repo import SQLAlchemyStudentRepository
-from psycopg2_repo import Psycopg2StudentRepository
+from sqlalchemy import text, or_
 import json
 
 # Create Flask app
@@ -16,8 +14,12 @@ if not app.secret_key:
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///student_management.db')
+# Database configuration - requires DATABASE_URL environment variable
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+if not app.config['SQLALCHEMY_DATABASE_URI']:
+    print("ERROR: DATABASE_URL environment variable is required")
+    print("For external deployment, set: DATABASE_URL=postgresql://postgres:12345678@localhost:5432/student_management")
+    exit(1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
@@ -29,52 +31,18 @@ def init_db():
     with app.app_context():
         db.create_all()
 
-# Initialize repository based on DB_DRIVER environment variable
-DB_DRIVER = os.environ.get('DB_DRIVER', 'sqlalchemy').lower()
-repository = None
-
-def init_repository():
-    """Initialize the appropriate repository based on DB_DRIVER"""
-    global repository
-    
-    if DB_DRIVER == 'psycopg2':
-        print(f"Initializing psycopg2 repository with driver: {DB_DRIVER}")
-        repository = Psycopg2StudentRepository()
-        try:
-            repository.initialize_database()
-            print("psycopg2 repository initialized successfully")
-        except Exception as e:
-            print(f"Warning: Could not initialize psycopg2 database: {e}")
-    else:
-        print(f"Initializing SQLAlchemy repository with driver: {DB_DRIVER}")
-        repository = SQLAlchemyStudentRepository()
-        try:
-            init_db()  # Initialize SQLAlchemy database
-            print("SQLAlchemy repository initialized successfully")
-        except Exception as e:
-            print(f"Warning: Could not initialize SQLAlchemy database: {e}")
-    
-    return repository
-
-def get_average_grade(grades):
-    """Calculate average grade from a list of grades"""
-    if grades:
-        return round(sum(float(grade) for grade in grades) / len(grades), 2)
-    return 0.0
-
-# Initialize repository on startup
+# Initialize database on startup
 try:
-    init_repository()
+    init_db()
 except Exception as e:
-    print(f"Warning: Could not initialize repository: {e}")
-    print("Repository will be initialized on first use")
+    print(f"Warning: Could not initialize database: {e}")
+    print("Database will be created on first use")
 
 @app.route('/')
 def index():
     """Main dashboard showing all students"""
-    students_data = repository.get_all_students()
-    # Sort by name since repository may not guarantee order
-    students_data.sort(key=lambda x: x['name'])
+    students = Student.query.order_by(Student.name).all()
+    students_data = [student.to_dict() for student in students]
     
     # Calculate stats
     total_students = len(students_data)
@@ -123,24 +91,35 @@ def add_student():
             return render_template('add_student.html')
         
         # Check if roll number exists
-        if repository.get_student_by_roll(roll_no):
+        existing_student = Student.query.filter_by(roll_no=roll_no).first()
+        if existing_student:
             flash('Roll number already exists', 'error')
             return render_template('add_student.html')
         
-        # Create new student
-        if repository.add_student(roll_no, name, email, courses, grades):
-            flash(f'Student {name} added successfully!', 'success')
+        # Add student using SQLAlchemy
+        try:
+            student = Student()
+            student.roll_no = roll_no
+            student.name = name
+            student.email = email
+            student.courses = courses
+            student.grades = grades
+            db.session.add(student)
+            db.session.commit()
+            flash('Student added successfully!', 'success')
             return redirect(url_for('index'))
-        else:
-            flash('An error occurred while adding the student', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error adding student. Please try again.', 'error')
+            return render_template('add_student.html')
     
     return render_template('add_student.html')
 
 @app.route('/edit_student/<roll_no>', methods=['GET', 'POST'])
 def edit_student(roll_no):
     """Edit an existing student"""
-    student_data = repository.get_student_by_roll(roll_no)
-    if not student_data:
+    student = Student.query.filter_by(roll_no=roll_no).first()
+    if not student:
         flash('Student not found', 'error')
         return redirect(url_for('index'))
     
@@ -153,7 +132,7 @@ def edit_student(roll_no):
         # Validate inputs
         if not all([name, email, courses_str, grades_str]):
             flash('All fields are required', 'error')
-            return render_template('edit_student.html', student=student_data)
+            return render_template('edit_student.html', student=student.to_dict())
         
         # Parse courses and grades
         courses = [course.strip() for course in courses_str.split(',')]
@@ -161,30 +140,39 @@ def edit_student(roll_no):
             grades = [float(grade.strip()) for grade in grades_str.split(',')]
         except ValueError:
             flash('Grades must be valid numbers', 'error')
-            return render_template('edit_student.html', student=student_data)
+            return render_template('edit_student.html', student=student.to_dict())
         
         if len(courses) != len(grades):
             flash('Number of courses must match number of grades', 'error')
-            return render_template('edit_student.html', student=student_data)
+            return render_template('edit_student.html', student=student.to_dict())
         
         # Update student
-        if repository.update_student(roll_no, name, email, courses, grades):
-            flash(f'Student {name} updated successfully!', 'success')
+        try:
+            student.name = name
+            student.email = email
+            student.courses = courses
+            student.grades = grades
+            db.session.commit()
+            flash('Student updated successfully!', 'success')
             return redirect(url_for('index'))
-        else:
-            flash('An error occurred while updating the student', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error updating student. Please try again.', 'error')
     
-    return render_template('edit_student.html', student=student_data)
+    return render_template('edit_student.html', student=student.to_dict())
 
-@app.route('/delete_student/<roll_no>')
+@app.route('/delete_student/<roll_no>', methods=['POST'])
 def delete_student(roll_no):
     """Delete a student"""
-    student_data = repository.get_student_by_roll(roll_no)
-    if student_data:
-        if repository.delete_student(roll_no):
-            flash(f'Student {student_data["name"]} deleted successfully!', 'success')
-        else:
-            flash('An error occurred while deleting the student', 'error')
+    student = Student.query.filter_by(roll_no=roll_no).first()
+    if student:
+        try:
+            db.session.delete(student)
+            db.session.commit()
+            flash('Student deleted successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error deleting student', 'error')
     else:
         flash('Student not found', 'error')
     
@@ -192,58 +180,50 @@ def delete_student(roll_no):
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-    """SQL query interface"""
-    results = []
-    query_text = ""
+    """Custom query interface"""
+    results = None
     
     if request.method == 'POST':
         query_text = request.form['query'].strip()
         if query_text:
             try:
-                # Enhanced security for SQL queries
-                query_upper = query_text.upper().strip()
-                if query_upper.startswith('SELECT') and not any(dangerous in query_upper for dangerous in ['DROP', 'DELETE', 'UPDATE', 'INSERT', 'ALTER', 'CREATE', 'TRUNCATE']):
-                    # Limit query length for security
-                    if len(query_text) > 1000:
-                        flash('Query too long. Maximum 1000 characters allowed.', 'error')
+                # Security checks for safe queries
+                forbidden_keywords = ['DROP', 'DELETE', 'UPDATE', 'INSERT', 'ALTER', 'CREATE', 'TRUNCATE']
+                if any(keyword in query_text.upper() for keyword in forbidden_keywords):
+                    flash('Only SELECT queries are allowed', 'error')
+                elif len(query_text) > 1000:
+                    flash('Query too long (max 1000 characters)', 'error')
+                elif query_text.upper().startswith('SELECT'):
+                    # Use raw SQL for custom queries
+                    result = db.session.execute(text(query_text))
+                    results = [list(row) for row in result.fetchall()]
+                    # Limit results for display
+                    if len(results) > 100:
+                        results = results[:100]
+                        flash(f'Query executed successfully. Showing first 100 results.', 'success')
                     else:
-                        # Use repository for custom queries
-                        raw_results = repository.execute_select_query(query_text)
-                        
-                        # Convert raw results to a simple table format for display
-                        if raw_results:
-                            # Create simple table results
-                            results = []
-                            for row in raw_results[:100]:  # Limit to 100 rows
-                                row_dict = {}
-                                for i, value in enumerate(row):
-                                    row_dict[f'col_{i}'] = value
-                                results.append(row_dict)
-                            
-                            if len(raw_results) > 100:
-                                flash(f'Query executed successfully. Showing first 100 of {len(raw_results)} results.', 'info')
-                            else:
-                                flash(f'Query executed successfully. Found {len(raw_results)} results.', 'success')
-                        else:
-                            results = []
-                            flash('Query executed successfully. No results found.', 'info')
+                        flash(f'Query executed successfully. Found {len(results)} results.', 'success')
                 else:
-                    flash('Only SELECT queries are allowed. No DDL/DML operations permitted.', 'error')
+                    flash('Only SELECT queries are allowed', 'error')
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-    return render_template('query.html', results=results, query_text=query_text)
+    return render_template('query.html', results=results)
 
 @app.route('/reports')
 def reports():
-    """Generate reports and statistics"""
+    """Generate reports"""
     try:
-        # Get all students
-        students_data = repository.get_all_students()
+        students = Student.query.all()
+        students_data = [student.to_dict() for student in students]
         
         total_students = len(students_data)
         
-        # Calculate course stats
+        if total_students == 0:
+            flash('No students found to generate reports', 'warning')
+            return render_template('reports.html', report_data={})
+        
+        # Course statistics and grade distribution
         course_stats = {}
         grade_distribution = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0}
         
@@ -279,13 +259,13 @@ def reports():
         
         # Top performers
         top_performers = []
-        for student_data in students_data:
-            avg_grade = get_average_grade(student_data['grades'])
+        for student in students:
+            avg_grade = student.get_average_grade()
             top_performers.append({
-                'name': student_data['name'],
-                'roll_no': student_data['roll_no'],
+                'name': student.name,
+                'roll_no': student.roll_no,
                 'avg_grade': avg_grade,
-                'courses': student_data['courses']
+                'courses': student.courses
             })
         
         top_performers.sort(key=lambda x: x['avg_grade'], reverse=True)
@@ -293,14 +273,14 @@ def reports():
         
         # Low performers - students needing attention (all students with avg < 70)
         low_performers = []
-        for student_data in students_data:
-            avg_grade = get_average_grade(student_data['grades'])
+        for student in students:
+            avg_grade = student.get_average_grade()
             if avg_grade < 70:
                 low_performers.append({
-                    'name': student_data['name'],
-                    'roll_no': student_data['roll_no'],
+                    'name': student.name,
+                    'roll_no': student.roll_no,
                     'avg_grade': avg_grade,
-                    'courses': student_data['courses']
+                    'courses': student.courses
                 })
         
         low_performers.sort(key=lambda x: x['avg_grade'])
@@ -335,32 +315,33 @@ def search():
     students_data = []
     
     if search_term:
-        # Use repository for searching
-        students_data = repository.search_students(search_term)
-        flash(f'Found {len(students_data)} students matching "{search_term}"', 'info')
+        # Use SQLAlchemy ORM for searching
+        students = Student.query.filter(
+            or_(
+                Student.name.ilike(f'%{search_term}%'),
+                Student.roll_no.ilike(f'%{search_term}%'),
+                Student.email.ilike(f'%{search_term}%')
+            )
+        ).all()
+        
+        students_data = [student.to_dict() for student in students]
     
-    return render_template('index.html', students=students_data, search_term=search_term)
+    return render_template('index.html', students=students_data, search_term=search_term, stats={'total_students': len(students_data), 'total_courses': 0, 'avg_grade': 0})
 
 @app.route('/export')
-def export_data():
-    """Export student data as JSON"""
-    try:
-        students_data = repository.get_all_students()
-        
-        json_data = json.dumps(students_data, indent=2, default=str)
-        
-        response = Response(
-            json_data,
-            mimetype='application/json',
-            headers={'Content-Disposition': 'attachment; filename=student_records.json'}
-        )
-        
-        flash('Student data exported successfully!', 'success')
-        return response
-        
-    except Exception as e:
-        flash('An error occurred while exporting data', 'error')
-        return redirect(url_for('index'))
+def export():
+    """Export students data as JSON"""
+    students = Student.query.all()
+    students_data = [student.to_dict() for student in students]
+    
+    # Create JSON response
+    json_data = json.dumps(students_data, indent=2, default=str)
+    
+    return Response(
+        json_data,
+        mimetype='application/json',
+        headers={'Content-Disposition': 'attachment; filename=students_export.json'}
+    )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
