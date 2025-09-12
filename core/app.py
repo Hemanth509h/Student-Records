@@ -2,7 +2,6 @@ import os
 import secrets
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.middleware.proxy_fix import ProxyFix
 from models import db, Student
 from sqlalchemy import text, or_
 import json
@@ -10,8 +9,10 @@ import json
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
-# Configure for Replit proxy environment
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+# Configure for proxy environments (like Replit) if needed
+if os.environ.get('REPLIT_DB_URL') or os.environ.get('REPL_ID'):
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 app.secret_key = os.environ.get("SESSION_SECRET")
 if not app.secret_key:
@@ -19,12 +20,24 @@ if not app.secret_key:
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration - use Replit's PostgreSQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
+# Database configuration - flexible for different environments
+database_url = os.environ.get('DATABASE_URL')
+if not database_url:
+    # Fallback to SQLite for local development
+    database_url = 'sqlite:///student_management.db'
+    print("INFO: Using SQLite database for local development")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+
+# Only use PostgreSQL-specific settings if using PostgreSQL
+if database_url.startswith('postgresql://') or database_url.startswith('postgres://'):
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        "pool_recycle": 300,
+        "pool_pre_ping": True,
+    }
+else:
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {}
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
