@@ -2,20 +2,25 @@ import os
 import secrets
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.middleware.proxy_fix import ProxyFix
 from models import db, Student
 from sqlalchemy import text, or_
 import json
 
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
+
+# Configure for Replit proxy environment
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
 app.secret_key = os.environ.get("SESSION_SECRET")
 if not app.secret_key:
     # Generate a random secret for development only
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration - use Replit's database or your external PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', os.environ.get('DATABASE_URL', 'sqlite:///student_management.db'))
+# Database configuration - use Replit's PostgreSQL database
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
