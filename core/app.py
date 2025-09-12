@@ -20,23 +20,12 @@ if not app.secret_key:
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration - flexible for different environments
-database_url = os.environ.get('DATABASE_URL')
-if not database_url:
-    # Fallback to SQLite for local development
-    database_url = 'sqlite:///student_management.db'
-    print("INFO: Using SQLite database for local development")
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-
-# Only use PostgreSQL-specific settings if using PostgreSQL
-if database_url.startswith('postgresql://') or database_url.startswith('postgres://'):
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "pool_recycle": 300,
-        "pool_pre_ping": True,
-    }
-else:
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {}
+# Database configuration - PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

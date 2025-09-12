@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
-import json
-import os
 
 db = SQLAlchemy()
 
@@ -12,33 +11,9 @@ class Student(db.Model):
     roll_no = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    
-    # Use JSON columns for compatibility between PostgreSQL and SQLite
-    _courses = db.Column('courses', db.Text, nullable=False)
-    _grades = db.Column('grades', db.Text, nullable=False)
-    
+    courses = db.Column(ARRAY(db.String), nullable=False)
+    grades = db.Column(ARRAY(db.Numeric), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    @property
-    def courses(self):
-        """Get courses as a list"""
-        return json.loads(self._courses) if self._courses else []
-    
-    @courses.setter
-    def courses(self, value):
-        """Set courses from a list"""
-        self._courses = json.dumps(value if value else [])
-    
-    @property
-    def grades(self):
-        """Get grades as a list of floats"""
-        grades_data = json.loads(self._grades) if self._grades else []
-        return [float(grade) for grade in grades_data]
-    
-    @grades.setter
-    def grades(self, value):
-        """Set grades from a list"""
-        self._grades = json.dumps([float(grade) for grade in value] if value else [])
     
     def __repr__(self):
         return f'<Student {self.roll_no}: {self.name}>'
