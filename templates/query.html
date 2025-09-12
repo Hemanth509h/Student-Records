@@ -58,150 +58,27 @@
             </div>
             <div class="card-body">
                 {% if results %}
-                    {% if results[0].get('group') %}
-                        <!-- Grouped Results -->
-                        <div class="accordion" id="groupedResults">
-                            {% for group in results %}
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading{{ loop.index }}">
-                                    <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" 
-                                            type="button" data-bs-toggle="collapse" 
-                                            data-bs-target="#collapse{{ loop.index }}">
-                                        <strong>{{ group.group }}</strong>
-                                        <span class="badge bg-secondary ms-2">{{ group.count }} students</span>
-                                    </button>
-                                </h2>
-                                <div id="collapse{{ loop.index }}" 
-                                     class="accordion-collapse collapse {% if loop.first %}show{% endif %}" 
-                                     data-bs-parent="#groupedResults">
-                                    <div class="accordion-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-dark table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Roll No</th>
-                                                        <th>Name</th>
-                                                        <th>Email</th>
-                                                        <th>Courses</th>
-                                                        <th>Grades</th>
-                                                        <th>Avg Grade</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for student in group.students %}
-                                                    <tr>
-                                                        <td><span class="badge bg-primary">{{ student.roll_no }}</span></td>
-                                                        <td>{{ student.name }}</td>
-                                                        <td><small>{{ student.email }}</small></td>
-                                                        <td>
-                                                            {% for course in student.courses %}
-                                                                <span class="badge bg-secondary me-1">{{ course }}</span>
-                                                            {% endfor %}
-                                                        </td>
-                                                        <td>
-                                                            {% for grade in student.grades %}
-                                                                <span class="badge bg-{% if grade >= 90 %}success{% elif grade >= 80 %}info{% elif grade >= 70 %}warning{% else %}danger{% endif %} me-1">
-                                                                    {{ grade }}
-                                                                </span>
-                                                            {% endfor %}
-                                                        </td>
-                                                        <td>
-                                                            {% set avg_grade = (student.grades | sum) / (student.grades | length) if student.grades else 0 %}
-                                                            <span class="badge bg-{% if avg_grade >= 90 %}success{% elif avg_grade >= 80 %}info{% elif avg_grade >= 70 %}warning{% else %}danger{% endif %}">
-                                                                {{ "%.1f"|format(avg_grade) }}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <!-- Regular Results -->
+                        <!-- Simple Query Results Table -->
                         <div class="table-responsive">
                             <table class="table table-dark table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        {% if results[0].get('roll_no') %}
-                                            <th>Roll No</th>
-                                        {% endif %}
-                                        {% if results[0].get('name') %}
-                                            <th>Name</th>
-                                        {% endif %}
-                                        {% if results[0].get('email') %}
-                                            <th>Email</th>
-                                        {% endif %}
-                                        {% if results[0].get('courses') %}
-                                            <th>Courses</th>
-                                        {% endif %}
-                                        {% if results[0].get('grades') %}
-                                            <th>Grades</th>
-                                        {% endif %}
-                                        {% if results[0].get('avg_grade') %}
-                                            <th>Avg Grade</th>
-                                        {% endif %}
-                                        {% if results[0].get('course_count') %}
-                                            <th>Course Count</th>
-                                        {% endif %}
+                                        {% for key in results[0].keys() %}
+                                            <th>{{ key.replace('col_', 'Column ') }}</th>
+                                        {% endfor %}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for row in results %}
                                     <tr>
-                                        {% if row.get('roll_no') %}
-                                            <td><span class="badge bg-primary">{{ row.roll_no }}</span></td>
-                                        {% endif %}
-                                        {% if row.get('name') %}
-                                            <td><strong>{{ row.name }}</strong></td>
-                                        {% endif %}
-                                        {% if row.get('email') %}
-                                            <td><small class="text-muted">{{ row.email }}</small></td>
-                                        {% endif %}
-                                        {% if row.get('courses') %}
-                                            <td>
-                                                {% if row.courses is string %}
-                                                    {{ row.courses }}
-                                                {% else %}
-                                                    {% for course in row.courses %}
-                                                        <span class="badge bg-secondary me-1">{{ course }}</span>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                        {% if row.get('grades') %}
-                                            <td>
-                                                {% if row.grades is string %}
-                                                    {{ row.grades }}
-                                                {% else %}
-                                                    {% for grade in row.grades %}
-                                                        <span class="badge bg-{% if grade >= 90 %}success{% elif grade >= 80 %}info{% elif grade >= 70 %}warning{% else %}danger{% endif %} me-1">
-                                                            {{ grade }}
-                                                        </span>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                        {% if row.get('avg_grade') %}
-                                            <td>
-                                                <span class="badge bg-{% if row.avg_grade >= 90 %}success{% elif row.avg_grade >= 80 %}info{% elif row.avg_grade >= 70 %}warning{% else %}danger{% endif %}">
-                                                    {{ "%.1f"|format(row.avg_grade) }}
-                                                </span>
-                                            </td>
-                                        {% endif %}
-                                        {% if row.get('course_count') %}
-                                            <td><span class="badge bg-info">{{ row.course_count }}</span></td>
-                                        {% endif %}
+                                        {% for value in row.values() %}
+                                            <td>{{ value }}</td>
+                                        {% endfor %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                    {% endif %}
                 {% else %}
                     <div class="text-center py-4">
                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
