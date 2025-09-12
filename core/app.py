@@ -28,45 +28,21 @@ db.init_app(app)
 # Database initialization function
 def init_db():
     """Initialize database tables"""
-    try:
-        with app.app_context():
-            db.create_all()
-            print("✅ Database tables created successfully")
-            return True
-    except Exception as e:
-        print(f"❌ Failed to create database tables: {e}")
-        return False
+    with app.app_context():
+        db.create_all()
 
 # Initialize database on startup
-db_initialized = False
 try:
-    db_initialized = init_db()
+    init_db()
 except Exception as e:
     print(f"Warning: Could not initialize database: {e}")
-    print("Use /init-db route to initialize database manually")
+    print("Database will be created on first use")
 
 @app.route('/')
 def index():
     """Main dashboard showing all students"""
-    try:
-        students = Student.query.order_by(Student.name).all()
-        students_data = [student.to_dict() for student in students]
-    except Exception as e:
-        # If tables don't exist, try to create them
-        print(f"Database error: {e}")
-        if 'no such table' in str(e).lower():
-            print("Attempting to create database tables...")
-            try:
-                init_db()
-                students = Student.query.order_by(Student.name).all()
-                students_data = [student.to_dict() for student in students]
-            except Exception as init_error:
-                print(f"Failed to create tables: {init_error}")
-                flash('Database not initialized. Please contact administrator.', 'error')
-                students_data = []
-        else:
-            flash('Database connection error', 'error')
-            students_data = []
+    students = Student.query.order_by(Student.name).all()
+    students_data = [student.to_dict() for student in students]
     
     # Calculate stats
     total_students = len(students_data)
@@ -366,20 +342,6 @@ def export():
         mimetype='application/json',
         headers={'Content-Disposition': 'attachment; filename=students_export.json'}
     )
-
-@app.route('/init-db')
-def initialize_database():
-    """Manually initialize database tables"""
-    try:
-        with app.app_context():
-            db.create_all()
-            flash('Database initialized successfully!', 'success')
-            print('✅ Database manually initialized')
-    except Exception as e:
-        flash(f'Failed to initialize database: {str(e)}', 'error')
-        print(f'❌ Manual database initialization failed: {e}')
-    
-    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
