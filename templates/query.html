@@ -54,7 +54,7 @@
                 <h5 class="card-title mb-0">
                     <i class="fas fa-table me-2"></i>Query Results
                 </h5>
-                <span class="badge bg-primary">{{ results|length }} records found</span>
+                <span class="badge bg-primary">{{ results|length if results else 0 }} records found</span>
             </div>
             <div class="card-body">
                 {% if results %}
