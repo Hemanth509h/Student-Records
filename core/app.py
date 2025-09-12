@@ -14,12 +14,12 @@ if not app.secret_key:
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration - requires DATABASE_URL environment variable
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-if not app.config['SQLALCHEMY_DATABASE_URI']:
-    print("ERROR: DATABASE_URL environment variable is required")
-    print("For external deployment, set: DATABASE_URL=postgresql://postgres:12345678@localhost:5432/student_management")
-    exit(1)
+# Database configuration - use Replit's database or your external PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', os.environ.get('DATABASE_URL', 'sqlite:///student_management.db'))
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
