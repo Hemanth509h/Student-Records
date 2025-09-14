@@ -59,31 +59,48 @@ except Exception as e:
     print(f"Warning: Could not initialize database: {e}")
     print("Database will be created on first use")
     
+# Hardcoded admin user
 class AdminUser(UserMixin):
-    id = 1
-    email = "admin@studentrecords.com"
+    def __init__(self):
+        self.id = 1
+        self.email = "admin@studentrecords.com"
+
 admin_user = AdminUser()
-# Authentication routes
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Support both hardcoded admin and DB users
+    if str(user_id) == "1":
+        return admin_user
+    return User.query.get(int(user_id))
+
+# --- Login route ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login"""
     if request.method == 'POST':
         email = request.form['email'].strip().lower()
         password = request.form['password']
-        
+
         if not email or not password:
             flash('Email and password are required', 'error')
             return render_template('login.html')
-        
+
+        # Hardcoded admin login
         if email == "admin@studentrecords.com" and password == "admin123":
             login_user(admin_user)
             flash('Login successful!', 'success')
-            
-            # Redirect to next page or index
             return redirect(url_for('index'))
-        else:
-            flash('Invalid email or password', 'error')
-    
+
+        # Database users (if you want to allow them)
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            flash('Login successful!', 'success')
+            return redirect(url_for('index'))
+
+        flash('Invalid email or password', 'error')
+
     return render_template('login.html')
 
 @app.route('/logout')
