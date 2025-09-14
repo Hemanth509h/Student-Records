@@ -286,7 +286,7 @@ def query():
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-    return render_template('coming_soon.html', results=results or [])
+    return render_template('coming_soo1n.html', results=results or [])
 
 @app.route('/reports')
 @login_required
