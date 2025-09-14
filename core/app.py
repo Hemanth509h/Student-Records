@@ -60,63 +60,6 @@ except Exception as e:
     print("Database will be created on first use")
 
 # Authentication routes
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    """User registration"""
-    if request.method == 'POST':
-        email = request.form['email'].strip().lower()
-        username = request.form.get('username', '').strip()
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        
-        # Validate inputs
-        if not email or not password:
-            flash('Email and password are required', 'error')
-            return render_template('register.html')
-        
-        # Validate email format
-        try:
-            validate_email(email)
-        except EmailNotValidError:
-            flash('Please enter a valid email address', 'error')
-            return render_template('register.html')
-        
-        # Check password confirmation
-        if password != confirm_password:
-            flash('Passwords do not match', 'error')
-            return render_template('register.html')
-        
-        # Check password length
-        if len(password) < 6:
-            flash('Password must be at least 6 characters long', 'error')
-            return render_template('register.html')
-        
-        # Check if user already exists
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
-            flash('Email already registered', 'error')
-            return render_template('register.html')
-        
-        # Create new user
-        try:
-            user = User(
-                email=email,
-                username=username if username else None,
-                password_hash=generate_password_hash(password)
-            )
-            db.session.add(user)
-            db.session.commit()
-            
-            login_user(user)
-            flash('Registration successful! Welcome!', 'success')
-            return redirect(url_for('index'))
-        except Exception as e:
-            db.session.rollback()
-            flash('Registration failed. Please try again.', 'error')
-            return render_template('register.html')
-    
-    return render_template('register.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login"""
