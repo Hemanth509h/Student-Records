@@ -286,7 +286,7 @@ def query():
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-    return render_template('query.html', results=results or [])
+    return render_template('coming_soon.html', results=results or [])
 
 @app.route('/reports')
 @login_required
@@ -381,7 +381,7 @@ def reports():
             'low_performers': low_performers
         }
         
-        return render_template('reports.html', report_data=report_data)
+        return render_template('coming_soon.html', report_data=report_data)
         
     except Exception as e:
         flash('An error occurred while generating reports', 'error')
