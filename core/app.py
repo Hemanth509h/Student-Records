@@ -1,8 +1,11 @@
 import os
 import secrets
-from flask import Flask, render_template, request, redirect, url_for, flash, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Student
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from email_validator import validate_email, EmailNotValidError
+from models import db, Student, User
 from sqlalchemy import text, or_
 import json
 
@@ -32,6 +35,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize SQLAlchemy
 db.init_app(app)
 
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 # Database initialization function
 def init_db():
     """Initialize database tables"""
@@ -45,7 +59,101 @@ except Exception as e:
     print(f"Warning: Could not initialize database: {e}")
     print("Database will be created on first use")
 
+# Authentication routes
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """User registration"""
+    if request.method == 'POST':
+        email = request.form['email'].strip().lower()
+        username = request.form.get('username', '').strip()
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        # Validate inputs
+        if not email or not password:
+            flash('Email and password are required', 'error')
+            return render_template('register.html')
+        
+        # Validate email format
+        try:
+            validate_email(email)
+        except EmailNotValidError:
+            flash('Please enter a valid email address', 'error')
+            return render_template('register.html')
+        
+        # Check password confirmation
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('register.html')
+        
+        # Check password length
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long', 'error')
+            return render_template('register.html')
+        
+        # Check if user already exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered', 'error')
+            return render_template('register.html')
+        
+        # Create new user
+        try:
+            user = User(
+                email=email,
+                username=username if username else None,
+                password_hash=generate_password_hash(password)
+            )
+            db.session.add(user)
+            db.session.commit()
+            
+            login_user(user)
+            flash('Registration successful! Welcome!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Registration failed. Please try again.', 'error')
+            return render_template('register.html')
+    
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """User login"""
+    if request.method == 'POST':
+        email = request.form['email'].strip().lower()
+        password = request.form['password']
+        
+        if not email or not password:
+            flash('Email and password are required', 'error')
+            return render_template('login.html')
+        
+        # Find user
+        user = User.query.filter_by(email=email).first()
+        
+        # Check credentials
+        if user and check_password_hash(user.password_hash, password):
+            login_user(user)
+            flash('Login successful!', 'success')
+            
+            # Redirect to next page or index
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            flash('Invalid email or password', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """User logout"""
+    logout_user()
+    flash('You have been logged out', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def index():
     """Main dashboard showing all students"""
     students = Student.query.order_by(Student.name).all()
@@ -71,6 +179,7 @@ def index():
     return render_template('index.html', students=students_data, stats=stats)
 
 @app.route('/add_student', methods=['GET', 'POST'])
+@login_required
 def add_student():
     """Add a new student"""
     if request.method == 'POST':
@@ -123,6 +232,7 @@ def add_student():
     return render_template('add_student.html')
 
 @app.route('/edit_student/<roll_no>', methods=['GET', 'POST'])
+@login_required
 def edit_student(roll_no):
     """Edit an existing student"""
     student = Student.query.filter_by(roll_no=roll_no).first()
@@ -169,6 +279,7 @@ def edit_student(roll_no):
     return render_template('edit_student.html', student=student.to_dict())
 
 @app.route('/delete_student/<roll_no>', methods=['POST'])
+@login_required
 def delete_student(roll_no):
     """Delete a student"""
     student = Student.query.filter_by(roll_no=roll_no).first()
@@ -186,6 +297,7 @@ def delete_student(roll_no):
     return redirect(url_for('index'))
 
 @app.route('/query', methods=['GET', 'POST'])
+@login_required
 def query():
     """Custom query interface"""
     results = None
@@ -218,6 +330,7 @@ def query():
     return render_template('query.html', results=results or [])
 
 @app.route('/reports')
+@login_required
 def reports():
     """Generate reports"""
     try:
@@ -316,6 +429,7 @@ def reports():
         return redirect(url_for('index'))
 
 @app.route('/search')
+@login_required
 def search():
     """Search students"""
     search_term = request.args.get('search', '').strip()
@@ -336,6 +450,7 @@ def search():
     return render_template('index.html', students=students_data, search_term=search_term, stats={'total_students': len(students_data), 'total_courses': 0, 'avg_grade': 0})
 
 @app.route('/export')
+@login_required
 def export():
     """Export students data as JSON"""
     students = Student.query.all()

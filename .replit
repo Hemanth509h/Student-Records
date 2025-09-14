@@ -37,9 +37,13 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
+localPort = 37483
+externalPort = 3002
+
+[[ports]]
 localPort = 39883
 externalPort = 3000
 
 [agent]
-integrations = ["python_database:1.0.0"]
+integrations = ["python_database:1.0.0", "python_log_in_with_replit:1.0.0"]
 expertMode = true
