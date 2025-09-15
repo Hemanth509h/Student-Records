@@ -8,7 +8,7 @@ Creates tables if they don't exist.
 import os
 import random
 from core.app import app, db
-from models import Student
+from core.models import Student
 
 # Sample data for generating realistic student records
 FIRST_NAMES = [

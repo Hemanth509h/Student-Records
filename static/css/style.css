@@ -400,6 +400,7 @@ footer {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -411,6 +412,7 @@ footer {
         opacity: 0;
         transform: translateX(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -421,9 +423,11 @@ footer {
     0% {
         box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(88, 166, 255, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(88, 166, 255, 0);
     }
@@ -446,20 +450,20 @@ footer {
     .card {
         margin-bottom: 1rem;
     }
-    
+
     .btn {
         width: 100%;
         margin-bottom: 0.5rem;
     }
-    
+
     .table-responsive {
         border-radius: 8px;
     }
-    
+
     .navbar-brand {
         font-size: 1.2rem;
     }
-    
+
     .stats-card {
         margin-bottom: 1rem;
     }
@@ -470,15 +474,15 @@ footer {
         padding-left: 1rem;
         padding-right: 1rem;
     }
-    
+
     .card-body {
         padding: 1rem;
     }
-    
+
     .btn-group {
         flex-direction: column;
     }
-    
+
     .btn-group .btn {
         border-radius: 8px !important;
         margin-bottom: 0.25rem;
@@ -487,13 +491,14 @@ footer {
 
 /* Print Styles */
 @media print {
+
     .navbar,
     .btn,
     .alert,
     footer {
         display: none !important;
     }
-    
+
     .card {
         border: 1px solid #000 !important;
         box-shadow: none !important;
@@ -501,11 +506,11 @@ footer {
         color: black !important;
         break-inside: avoid;
     }
-    
+
     .table {
         color: black !important;
     }
-    
+
     .badge {
         border: 1px solid #000 !important;
         color: black !important;
@@ -535,8 +540,13 @@ footer {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Custom Utilities */
@@ -601,4 +611,85 @@ footer {
     border-left: 4px solid var(--accent-red);
     padding: 0.5rem;
     border-radius: 4px;
+}
+
+/* ====== General Styles ====== */
+#login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    background: #111;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    width: 350px;
+    text-align: center;
+    border: 1px solid #333;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #f1f1f1;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #000;
+    color: #fff;
+}
+
+.input-group input:focus {
+    border-color: #4facfe;
+}
+
+.input-group label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 14px;
+    color: #aaa;
+    transition: 0.3s;
+    pointer-events: none;
+    background: transparent;
+}
+
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    background: #111;
+    padding: 0 5px;
+    color: #4facfe;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4facfe;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00c6ff;
 }
