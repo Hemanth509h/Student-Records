@@ -6,11 +6,11 @@
 <div id="login">
 <div class="login-container">
     <h2>Admin Login</h2>
-    <form id="loginForm" autocomplete="off">
+    <form id="loginForm" autocomplete="off" method="post">
 
       <div class="input-group">
-        <input type="text" id="username" name="username" required placeholder=" " />
-        <label for="username">Admin ID</label>
+        <input type="text" id="email" name="email" required placeholder=" " />
+        <label for="email">Admin ID</label>
       </div>
 
       <div class="input-group">
@@ -22,4 +22,26 @@
     </form>
   </div>
   </div>
+  <script>
+    document.gedocument.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('loginForm');
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            body: formData
+          
+        });
+
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+    }
+});
+
+  </script>
 {% endblock %}
