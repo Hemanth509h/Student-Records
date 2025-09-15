@@ -21,11 +21,7 @@
     "FLASK_APP": "main.py",
     "FLASK_ENV": "production"
   },
-  "functions": {
-    "main.py": {
-      "maxDuration": 30
-    }
-  },
+  
   "regions": ["iad1"],
   "outputDirectory": "dist"
 }
