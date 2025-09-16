@@ -3,6 +3,89 @@
 {% block title %}Login{% endblock %}
 
 {% block content %} 
+<style>
+    
+/* ====== General Styles ====== */
+#login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    background: #111;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    width: 350px;
+    text-align: center;
+    border: 1px solid #333;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #f1f1f1;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #000;
+    color: #fff;
+}
+
+.input-group input:focus {
+    border-color: #4facfe;
+}
+
+.input-group label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 14px;
+    color: #aaa;
+    transition: 0.3s;
+    pointer-events: none;
+    background: transparent;
+}
+
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    background: #111;
+    padding: 0 5px;
+    color: #4facfe;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4facfe;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00c6ff;
+}
+</style>
 <div id="login">
 <div class="login-container">
     <h2>Admin Login</h2>
