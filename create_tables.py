@@ -43,6 +43,7 @@ This will create all necessary tables in the PostgreSQL database.
 
 import os
 import sys
+from typing import List, Optional
 from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError
 from sqlalchemy import text
 
@@ -50,63 +51,7 @@ from sqlalchemy import text
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
-    from core.models import (
-        db, 
-        # Enums
-        AttendanceStatus, FeeStatus, BookStatus, UserRole,
-        # Core Models
-        User, Student,
-        # Feature 1: Course Management
-        Course,
-        # Feature 2: Teacher Management  
-        Teacher,
-        # Feature 3: Department Management
-        Department,
-        # Feature 4: Academic Period Management
-        AcademicPeriod,
-        # Feature 5: Attendance Tracking
-        Attendance,
-        # Feature 6: Enhanced Grade Analytics
-        ExamResult,
-        # Feature 7: Parent/Guardian Management
-        Guardian, StudentGuardian,
-        # Feature 8: Fee Management
-        FeeType, StudentFee,
-        # Feature 9: Library Management
-        Book, BookBorrowing,
-        # Feature 10: Exam Management
-        Exam,
-        # Feature 11: Timetable/Schedule Management
-        Timetable, Room,
-        # Feature 12: Assignment Management
-        Assignment, AssignmentSubmission,
-        # Feature 13: Event/Announcement System
-        Event, Announcement,
-        # Feature 14: Student Counseling Records
-        CounselingSession,
-        # Feature 15: Disciplinary Actions
-        DisciplinaryAction,
-        # Feature 16: Transportation Management
-        TransportRoute, StudentTransport,
-        # Feature 17: Hostel/Dormitory Management
-        Hostel, HostelRoom, StudentHostel,
-        # Feature 18: Health Records
-        HealthRecord,
-        # Feature 19: Scholarship Management
-        Scholarship, ScholarshipApplication,
-        # Feature 20: Alumni Management
-        Alumni,
-        # Feature 21: Staff Management
-        Staff,
-        # Feature 22: Inventory Management
-        InventoryCategory, InventoryItem,
-        # Feature 23: Communication/Messages
-        Message,
-        # Feature 24: Reports and Analytics
-        ReportTemplate,
-        # Feature 25: Certificates and Documents
-        Certificate, Document
-    )
+    from core.models import db, UserRole
     from core.app import app
     print("✓ Successfully imported all models and dependencies")
 except ImportError as e:
@@ -115,7 +60,7 @@ except ImportError as e:
     sys.exit(1)
 
 
-def create_enum_types():
+def create_enum_types() -> bool:
     """
     Create custom enum types in PostgreSQL database
     """
@@ -123,12 +68,12 @@ def create_enum_types():
     
     try:
         with app.app_context():
-            # Create enum types if they don't exist
+            # Create enum types manually (some PostgreSQL versions don't support IF NOT EXISTS for enums)
             enum_commands = [
-                "CREATE TYPE IF NOT EXISTS attendancestatus AS ENUM ('present', 'absent', 'late', 'excused');",
-                "CREATE TYPE IF NOT EXISTS feestatus AS ENUM ('pending', 'paid', 'overdue', 'cancelled');",
-                "CREATE TYPE IF NOT EXISTS bookstatus AS ENUM ('available', 'borrowed', 'reserved', 'damaged');",
-                "CREATE TYPE IF NOT EXISTS userrole AS ENUM ('admin', 'teacher', 'student', 'parent', 'staff');",
+                "DO $$ BEGIN CREATE TYPE attendancestatus AS ENUM ('present', 'absent', 'late', 'excused'); EXCEPTION WHEN duplicate_object THEN null; END $$;",
+                "DO $$ BEGIN CREATE TYPE feestatus AS ENUM ('pending', 'paid', 'overdue', 'cancelled'); EXCEPTION WHEN duplicate_object THEN null; END $$;",
+                "DO $$ BEGIN CREATE TYPE bookstatus AS ENUM ('available', 'borrowed', 'reserved', 'damaged'); EXCEPTION WHEN duplicate_object THEN null; END $$;",
+                "DO $$ BEGIN CREATE TYPE userrole AS ENUM ('ADMIN', 'TEACHER', 'STUDENT', 'PARENT', 'STAFF'); EXCEPTION WHEN duplicate_object THEN null; END $$;",
             ]
             
             for command in enum_commands:
@@ -136,7 +81,7 @@ def create_enum_types():
                     db.session.execute(text(command))
                     db.session.commit()
                 except Exception as e:
-                    print(f"  Note: {e}")
+                    print(f"  Note: {str(e)[:100]}...")
                     db.session.rollback()
             
             print("✓ Enum types created successfully")
@@ -148,7 +93,7 @@ def create_enum_types():
     return True
 
 
-def create_all_tables():
+def create_all_tables() -> bool:
     """
     Create all database tables using SQLAlchemy
     """
@@ -167,8 +112,12 @@ def create_all_tables():
                 WHERE table_schema = 'public' 
                 AND table_type = 'BASE TABLE';
             """))
-            table_count = result.fetchone()[0]
-            print(f"✓ Total tables created: {table_count}")
+            row = result.fetchone()
+            if row:
+                table_count = row[0]
+                print(f"✓ Total tables created: {table_count}")
+            else:
+                print("✓ Tables created (count not available)")
             
             return True
             
@@ -184,7 +133,7 @@ def create_all_tables():
         return False
 
 
-def verify_tables():
+def verify_tables() -> bool:
     """
     Verify that all expected tables have been created
     """
@@ -242,7 +191,7 @@ def verify_tables():
         return False
 
 
-def create_sample_admin_user():
+def create_sample_admin_user() -> bool:
     """
     Create a sample admin user for initial access
     """
@@ -250,41 +199,94 @@ def create_sample_admin_user():
     
     try:
         with app.app_context():
+            # Import User model here to avoid circular imports
+            from core.models import User
+            
             # Check if admin user already exists
-            existing_admin = User.query.filter_by(email='admin@school.com').first()
+            try:
+                existing_admin = User.query.filter_by(email='admin@school.com').first()
+                if existing_admin:
+                    print("✓ Admin user already exists")
+                    return True
+            except Exception:
+                # If query fails, table might not exist yet, continue to create
+                pass
             
-            if existing_admin:
-                print("✓ Admin user already exists")
+            # Create admin user using direct SQL to avoid model issues
+            try:
+                db.session.execute(text("""
+                    INSERT INTO users (email, username, password_hash, role, first_name, last_name, is_active) 
+                    VALUES (:email, :username, :password_hash, :role, :first_name, :last_name, :is_active)
+                    ON CONFLICT (email) DO NOTHING
+                """), {
+                    'email': 'admin@school.com',
+                    'username': 'admin',
+                    'password_hash': 'admin123',
+                    'role': 'ADMIN',
+                    'first_name': 'System',
+                    'last_name': 'Administrator',
+                    'is_active': True
+                })
+                db.session.commit()
+                
+                print("✓ Sample admin user created:")
+                print("  Email: admin@school.com")
+                print("  Password: admin123")
+                print("  Role: Administrator")
+                
                 return True
-            
-            # Create admin user
-            admin_user = User(
-                email='admin@school.com',
-                username='admin',
-                password_hash='admin123',  # In production, this should be properly hashed
-                role=UserRole.ADMIN,
-                first_name='System',
-                last_name='Administrator',
-                is_active=True
-            )
-            
-            db.session.add(admin_user)
-            db.session.commit()
-            
-            print("✓ Sample admin user created:")
-            print("  Email: admin@school.com")
-            print("  Password: admin123")
-            print("  Role: Administrator")
-            
-            return True
+                
+            except Exception as e:
+                print(f"✗ Error creating admin user with SQL: {e}")
+                db.session.rollback()
+                return False
             
     except Exception as e:
-        print(f"✗ Error creating admin user: {e}")
-        db.session.rollback()
+        print(f"✗ Error in admin user creation: {e}")
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
         return False
 
 
-def main():
+def show_completion_summary() -> None:
+    """
+    Display completion summary and next steps
+    """
+    print("\n" + "=" * 60)
+    print("🎉 DATABASE SCHEMA INITIALIZATION COMPLETE!")
+    print("=" * 60)
+    print("\n✅ All 25+ features have been successfully initialized:")
+    
+    features = [
+        "User Management with Roles",
+        "Student & Academic Management", 
+        "Course & Teacher Management",
+        "Attendance & Grade Tracking",
+        "Fee & Financial Management",
+        "Library & Book Management",
+        "Exam & Assignment Systems",
+        "Communication & Events",
+        "Health & Counseling Records",
+        "Transportation & Hostel Management",
+        "Alumni & Scholarship Programs",
+        "Staff & Inventory Management",
+        "Reports & Document Management"
+    ]
+    
+    for feature in features:
+        print(f"   • {feature}")
+    
+    print("\n🚀 Your Student Management System is ready to use!")
+    print("\n💡 Next steps:")
+    print("   1. Start the application: python main.py")
+    print("   2. Login with admin@school.com / admin123")
+    print("   3. Begin adding your school data")
+    print("   4. Customize the system to fit your needs")
+
+
+def main() -> None:
     """
     Main function to initialize the complete database schema
     """
@@ -299,7 +301,14 @@ def main():
         print("Make sure PostgreSQL database is configured")
         sys.exit(1)
     
-    print(f"✓ Database URL configured: {database_url[:50]}...")
+    # Mask password in URL for display
+    display_url = database_url
+    if '@' in display_url:
+        parts = display_url.split('@')
+        if len(parts) >= 2:
+            display_url = parts[0].split(':')[0] + ":***@" + parts[1]
+    
+    print(f"✓ Database URL configured: {display_url[:50]}...")
     
     # Step 1: Create enum types
     if not create_enum_types():
@@ -319,29 +328,10 @@ def main():
     # Step 4: Create sample admin user
     if not create_sample_admin_user():
         print("\n⚠️  Warning: Could not create sample admin user")
+        print("You can create one manually after starting the application")
     
-    print("\n" + "=" * 60)
-    print("🎉 DATABASE SCHEMA INITIALIZATION COMPLETE!")
-    print("=" * 60)
-    print("\n✅ All 25 features have been successfully initialized:")
-    print("   • User Management with Roles")
-    print("   • Student & Academic Management") 
-    print("   • Course & Teacher Management")
-    print("   • Attendance & Grade Tracking")
-    print("   • Fee & Financial Management")
-    print("   • Library & Book Management")
-    print("   • Exam & Assignment Systems")
-    print("   • Communication & Events")
-    print("   • Health & Counseling Records")
-    print("   • Transportation & Hostel Management")
-    print("   • Alumni & Scholarship Programs")
-    print("   • Staff & Inventory Management")
-    print("   • Reports & Document Management")
-    print("\n🚀 Your Student Management System is ready to use!")
-    print("\n💡 Next steps:")
-    print("   1. Start the application: python main.py")
-    print("   2. Login with admin@school.com / admin123")
-    print("   3. Begin adding your school data")
+    # Step 5: Show completion summary
+    show_completion_summary()
 
 
 if __name__ == "__main__":
