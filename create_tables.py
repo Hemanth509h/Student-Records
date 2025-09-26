@@ -214,6 +214,8 @@ def create_sample_admin_user() -> bool:
             
             # Create admin user using direct SQL to avoid model issues
             try:
+                from werkzeug.security import generate_password_hash
+                
                 db.session.execute(text("""
                     INSERT INTO users (email, username, password_hash, role, first_name, last_name, is_active) 
                     VALUES (:email, :username, :password_hash, :role, :first_name, :last_name, :is_active)
@@ -221,7 +223,7 @@ def create_sample_admin_user() -> bool:
                 """), {
                     'email': 'admin@school.com',
                     'username': 'admin',
-                    'password_hash': 'admin123',
+                    'password_hash': generate_password_hash('admin123'),
                     'role': 'ADMIN',
                     'first_name': 'System',
                     'last_name': 'Administrator',

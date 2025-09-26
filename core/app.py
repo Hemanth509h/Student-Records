@@ -79,9 +79,15 @@ def login():
             flash('Email and password are required', 'error')
             return render_template('login.html')
         
+        # Check for hardcoded admin
+        if email == "admin@school.com" and password == "admin123":
+            login_user(admin_user)
+            flash('Login successful!', 'success')
+            return redirect(url_for('index'))
+        
         # Database users (if you want to allow them)
         user = User.query.filter_by(email=email).first()
-        if user and user.password_hash == password:
+        if user and check_password_hash(user.password_hash, password):
             login_user(user)
             flash('Login successful!', 'success')
             return redirect(url_for('index'))
