@@ -32,7 +32,7 @@
                         
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#samplesModal">
-                                <i class="fas fa-lightbulb me-1"></i>Sample Queries
+                                <i class="fas fa-lightbulb me-1"></i>Example Queries
                             </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="clearQuery()">
                                 <i class="fas fa-eraser me-1"></i>Clear
@@ -98,7 +98,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="fas fa-lightbulb me-2"></i>Sample Queries
+                    <i class="fas fa-lightbulb me-2"></i>Example Queries
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -110,53 +110,15 @@
                         <small class="text-muted">Get all students</small>
                     </div>
                     
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Filter by Grade</h6>
-                        <code class="d-block mb-2">SELECT * FROM students WHERE avg_grade > 80</code>
-                        <small class="text-muted">Get students with average grade above 80</small>
-                    </div>
+                    
                     
                     <div class="list-group-item">
                         <h6 class="mb-1">Search by Name</h6>
-                        <code class="d-block mb-2">SELECT * FROM students WHERE name LIKE 'John'</code>
+                        <code class="d-block mb-2">SELECT * FROM students WHERE name LIKE 'Alexander Long'</code>
                         <small class="text-muted">Find students with 'John' in their name</small>
                     </div>
                     
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Grade Range</h6>
-                        <code class="d-block mb-2">SELECT * FROM students WHERE avg_grade >= 70 AND avg_grade <= 90</code>
-                        <small class="text-muted">Students with grades between 70 and 90</small>
-                    </div>
-                    
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Sort by Grade</h6>
-                        <code class="d-block mb-2">SELECT * FROM students ORDER BY avg_grade DESC</code>
-                        <small class="text-muted">Sort students by grade (highest first)</small>
-                    </div>
-                    
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Limited Results</h6>
-                        <code class="d-block mb-2">SELECT * FROM students ORDER BY name ASC LIMIT 5</code>
-                        <small class="text-muted">Get first 5 students alphabetically</small>
-                    </div>
-                    
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Course Filter</h6>
-                        <code class="d-block mb-2">SELECT name FROM students WHERE courses LIKE 'Math'</code>
-                        <small class="text-muted">Students enrolled in Math course</small>
-                    </div>
-                    
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Group by Course</h6>
-                        <code class="d-block mb-2">GROUP BY courses</code>
-                        <small class="text-muted">Group students by their courses</small>
-                    </div>
-                    
-                    <div class="list-group-item">
-                        <h6 class="mb-1">Multiple Courses</h6>
-                        <code class="d-block mb-2">SELECT * FROM students WHERE course_count > 2</code>
-                        <small class="text-muted">Students enrolled in more than 2 courses</small>
-                    </div>
+                  
                 </div>
             </div>
             <div class="modal-footer">

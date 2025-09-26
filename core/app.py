@@ -12,12 +12,8 @@ import json
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
-# Configure for proxy environments (like Replit) if needed
-if os.environ.get('REPLIT_DB_URL') or os.environ.get('REPL_ID'):
-    from werkzeug.middleware.proxy_fix import ProxyFix
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-app.secret_key = os.environ.get("SESSION_SECRET")
+app.secret_key = os.environ.get("SESSION_SECRET" ,"student_records0192837465")
 if not app.secret_key:
     # Generate a random secret for development only
     app.secret_key = secrets.token_hex(32)
@@ -85,16 +81,10 @@ def login():
         if not email or not password:
             flash('Email and password are required', 'error')
             return render_template('login.html')
-
-        # Hardcoded admin login
-        if email == "admin@studentrecords.com" and password == "admin123":
-            login_user(admin_user)
-            flash('Login successful!', 'success')
-            return redirect(url_for('index'))
-
+        
         # Database users (if you want to allow them)
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
+        if user and user.password_hash == password:
             login_user(user)
             flash('Login successful!', 'success')
             return redirect(url_for('index'))
@@ -113,7 +103,7 @@ def logout():
 
 @app.route('/')
 @login_required
-def index():
+def index():``
     """Main dashboard showing all students"""
     students = Student.query.order_by(Student.name).all()
     students_data = [student.to_dict() for student in students]
@@ -286,7 +276,7 @@ def query():
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-    return render_template('coming_soo1n.html', results=results or [])
+    return render_template('coming_soon.html', results=results or [])
 
 @app.route('/reports')
 @login_required
