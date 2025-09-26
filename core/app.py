@@ -38,9 +38,6 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.login_message_category = 'info'
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 # Database initialization function
 def init_db():
@@ -103,7 +100,7 @@ def logout():
 
 @app.route('/')
 @login_required
-def index():``
+def index():
     """Main dashboard showing all students"""
     students = Student.query.order_by(Student.name).all()
     students_data = [student.to_dict() for student in students]
