@@ -1,13 +1,18 @@
 import os
 import secrets
+import uuid
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from email_validator import validate_email, EmailNotValidError
 from core.models import db, Student, User
 from sqlalchemy import text, or_
 import json
+from PIL import Image
+import imghdr
 
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
@@ -31,6 +36,16 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# File upload configuration
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'uploads')
+app.config['PROFILE_UPLOAD_FOLDER'] = os.path.join(app.config['UPLOAD_FOLDER'], 'profiles')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+# Ensure upload directories exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['PROFILE_UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize SQLAlchemy
 db.init_app(app)
@@ -62,6 +77,76 @@ class AdminUser(UserMixin):
         self.email = "admin@studentrecords.com"
 
 admin_user = AdminUser()
+
+# File upload utility functions
+def allowed_file(filename):
+    """Check if uploaded file has allowed extension"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def validate_image(stream):
+    """Validate that uploaded file is a valid image"""
+    header = stream.read(512)
+    stream.seek(0)
+    format = imghdr.what(None, header)
+    if not format:
+        return False
+    return format.lower() in ALLOWED_EXTENSIONS
+
+def resize_image(image_path, max_size=(400, 400)):
+    """Resize image to specified maximum size while maintaining aspect ratio"""
+    try:
+        with Image.open(image_path) as img:
+            # Convert to RGB if necessary
+            if img.mode in ('RGBA', 'LA', 'P'):
+                img = img.convert('RGB')
+            
+            # Calculate new size maintaining aspect ratio
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            
+            # Save the resized image
+            img.save(image_path, 'JPEG', quality=85, optimize=True)
+            return True
+    except Exception as e:
+        print(f"Error resizing image: {e}")
+        return False
+
+def save_profile_photo(file, student_roll_no):
+    """Save uploaded profile photo and return filename"""
+    if file and allowed_file(file.filename):
+        # Validate image
+        if not validate_image(file.stream):
+            return None
+        
+        # Generate unique filename
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"{student_roll_no}_{uuid.uuid4().hex[:8]}.{file_extension}"
+        
+        # Save file
+        file_path = os.path.join(app.config['PROFILE_UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Resize image
+        if resize_image(file_path):
+            return filename
+        else:
+            # Remove file if resize failed
+            try:
+                os.remove(file_path)
+            except:
+                pass
+            return None
+    return None
+
+def delete_profile_photo(filename):
+    """Delete profile photo file"""
+    if filename:
+        try:
+            file_path = os.path.join(app.config['PROFILE_UPLOAD_FOLDER'], filename)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except Exception as e:
+            print(f"Error deleting profile photo: {e}")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -141,13 +226,28 @@ def add_student():
         roll_no = request.form['roll_no'].strip()
         name = request.form['name'].strip()
         email = request.form['email'].strip()
+        phone = request.form.get('phone', '').strip()
+        address = request.form.get('address', '').strip()
+        date_of_birth_str = request.form.get('date_of_birth', '').strip()
+        gender = request.form.get('gender', '').strip()
+        guardian_name = request.form.get('guardian_name', '').strip()
+        guardian_phone = request.form.get('guardian_phone', '').strip()
         courses_str = request.form['courses'].strip()
         grades_str = request.form['grades'].strip()
         
-        # Validate inputs
+        # Validate required inputs
         if not all([roll_no, name, email, courses_str, grades_str]):
-            flash('All fields are required', 'error')
+            flash('Roll number, name, email, courses, and grades are required', 'error')
             return render_template('add_student.html')
+        
+        # Parse date of birth
+        date_of_birth = None
+        if date_of_birth_str:
+            try:
+                date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Invalid date format for date of birth', 'error')
+                return render_template('add_student.html')
         
         # Parse courses and grades
         courses = [course.strip() for course in courses_str.split(',')]
@@ -173,8 +273,24 @@ def add_student():
             student.roll_no = roll_no
             student.name = name
             student.email = email
+            student.phone = phone
+            student.address = address
+            student.date_of_birth = date_of_birth
+            student.gender = gender
+            student.guardian_name = guardian_name
+            student.guardian_phone = guardian_phone
             student.courses = courses
             student.grades = grades
+            
+            # Handle profile photo upload
+            profile_photo = request.files.get('profile_photo')
+            if profile_photo and profile_photo.filename != '':
+                filename = save_profile_photo(profile_photo, roll_no)
+                if filename:
+                    student.profile_photo = filename
+                else:
+                    flash('Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP).', 'warning')
+            
             db.session.add(student)
             db.session.commit()
             flash('Student added successfully!', 'success')
@@ -198,13 +314,28 @@ def edit_student(roll_no):
     if request.method == 'POST':
         name = request.form['name'].strip()
         email = request.form['email'].strip()
+        phone = request.form.get('phone', '').strip()
+        address = request.form.get('address', '').strip()
+        date_of_birth_str = request.form.get('date_of_birth', '').strip()
+        gender = request.form.get('gender', '').strip()
+        guardian_name = request.form.get('guardian_name', '').strip()
+        guardian_phone = request.form.get('guardian_phone', '').strip()
         courses_str = request.form['courses'].strip()
         grades_str = request.form['grades'].strip()
         
-        # Validate inputs
+        # Validate required inputs
         if not all([name, email, courses_str, grades_str]):
-            flash('All fields are required', 'error')
+            flash('Name, email, courses, and grades are required', 'error')
             return render_template('edit_student.html', student=student.to_dict())
+        
+        # Parse date of birth
+        date_of_birth = None
+        if date_of_birth_str:
+            try:
+                date_of_birth = datetime.strptime(date_of_birth_str, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Invalid date format for date of birth', 'error')
+                return render_template('edit_student.html', student=student.to_dict())
         
         # Parse courses and grades
         courses = [course.strip() for course in courses_str.split(',')]
@@ -220,10 +351,31 @@ def edit_student(roll_no):
         
         # Update student
         try:
+            old_photo = student.profile_photo  # Keep track of old photo for deletion
+            
             student.name = name
             student.email = email
+            student.phone = phone
+            student.address = address
+            student.date_of_birth = date_of_birth
+            student.gender = gender
+            student.guardian_name = guardian_name
+            student.guardian_phone = guardian_phone
             student.courses = courses
             student.grades = grades
+            
+            # Handle profile photo upload
+            profile_photo = request.files.get('profile_photo')
+            if profile_photo and profile_photo.filename != '':
+                filename = save_profile_photo(profile_photo, student.roll_no)
+                if filename:
+                    # Delete old photo if it exists
+                    if old_photo:
+                        delete_profile_photo(old_photo)
+                    student.profile_photo = filename
+                else:
+                    flash('Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP).', 'warning')
+            
             db.session.commit()
             flash('Student updated successfully!', 'success')
             return redirect(url_for('index'))

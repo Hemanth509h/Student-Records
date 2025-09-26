@@ -1107,6 +1107,141 @@ function initializeInteractiveElements() {
 }
 
 /**
+ * Initialize general features for the application
+ */
+function initializeGeneralFeatures() {
+    // Initialize smooth scrolling for anchor links
+    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add loading states to form submissions
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            const submitButton = this.querySelector('button[type="submit"]');
+            if (submitButton) {
+                utils.showLoading(submitButton);
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
+            }
+        });
+    });
+    
+    // Add confirmation dialogs for delete actions
+    const deleteLinks = document.querySelectorAll('a[href*="delete"]');
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Initialize file upload features
+    initializeFileUpload();
+}
+
+/**
+ * Initialize file upload functionality
+ */
+function initializeFileUpload() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+    fileInputs.forEach(input => {
+        // Add drag and drop functionality
+        const container = input.closest('.file-upload-container') || input.parentElement;
+        
+        if (container) {
+            container.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                container.classList.add('drag-over');
+            });
+            
+            container.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                container.classList.remove('drag-over');
+            });
+            
+            container.addEventListener('drop', function(e) {
+                e.preventDefault();
+                container.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    input.files = files;
+                    handleFileSelect(input, files[0]);
+                }
+            });
+        }
+        
+        // Handle file selection
+        input.addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                handleFileSelect(this, this.files[0]);
+            }
+        });
+    });
+}
+
+/**
+ * Handle file selection and preview
+ */
+function handleFileSelect(input, file) {
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        utils.showToast('Please select a valid image file (JPG, PNG, GIF, WebP)', 'danger');
+        input.value = '';
+        return;
+    }
+    
+    // Validate file size (16MB max)
+    const maxSize = 16 * 1024 * 1024;
+    if (file.size > maxSize) {
+        utils.showToast('File size must be less than 16MB', 'danger');
+        input.value = '';
+        return;
+    }
+    
+    // Show file preview
+    const previewContainer = input.parentElement.querySelector('.file-preview');
+    if (previewContainer) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewContainer.innerHTML = `
+                <div class="image-preview">
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; object-fit: cover; border-radius: 8px;">
+                    <div class="preview-info mt-2">
+                        <small class="text-muted">
+                            ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                        </small>
+                    </div>
+                </div>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    // Update file input label
+    const label = input.parentElement.querySelector('label');
+    if (label) {
+        label.textContent = file.name;
+    }
+}
+
+/**
  * Show welcome message for new users
  */
 function showWelcomeMessage() {
