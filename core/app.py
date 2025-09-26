@@ -42,10 +42,6 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.login_message_category = 'info'
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 # Database initialization function
 def init_db():
     """Initialize database tables"""
@@ -286,7 +282,7 @@ def query():
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-    return render_template('coming_soo1n.html', results=results or [])
+    return render_template('query.html', results=results or [])
 
 @app.route('/reports')
 @login_required

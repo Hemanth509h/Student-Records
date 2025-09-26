@@ -1120,6 +1120,20 @@ function showWelcomeMessage() {
     }
 }
 
+// Initialize application when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all modules
+    formValidation.init();
+    searchFilter.init();
+    dashboard.init();
+    queryInterface.init();
+    reports.init();
+    
+    // Initialize other features
+    initializeGeneralFeatures();
+    showWelcomeMessage();
+});
+
 // Export utils for use in other scripts
 window.StudentRecordsApp = {
     utils: utils,
