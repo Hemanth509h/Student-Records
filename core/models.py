@@ -130,7 +130,7 @@ class Teacher(db.Model):
     
     # Relationships
     user = db.relationship('User', backref='teacher_profile')
-    department = db.relationship('Department', backref='teachers')
+    department = db.relationship('Department', foreign_keys=[department_id], backref='teachers')
     
     def __repr__(self):
         return f'<Teacher {self.employee_id}: {self.first_name} {self.last_name}>'
