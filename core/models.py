@@ -42,11 +42,15 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     phone = db.Column(db.String(20))
-    is_active = db.Column(db.Boolean, default=True)
+    active = db.Column(db.Boolean, default=True)  # Renamed to avoid conflict with UserMixin
     last_login = db.Column(db.DateTime)
     profile_picture = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @property
+    def is_active(self):
+        return self.active
     
     def __repr__(self):
         return f'<User {self.email}>'

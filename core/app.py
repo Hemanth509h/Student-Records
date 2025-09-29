@@ -374,7 +374,7 @@ def reports():
             'low_performers': low_performers
         }
         
-        return render_template('coming_soon.html', report_data=report_data)
+        return render_template('reports.html', report_data=report_data)
         
     except Exception as e:
         flash('An error occurred while generating reports', 'error')
