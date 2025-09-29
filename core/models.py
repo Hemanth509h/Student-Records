@@ -147,7 +147,7 @@ class Department(db.Model):
     department_code = db.Column(db.String(10), unique=True, nullable=False)
     department_name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    head_of_department_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    head_of_department_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
     budget = db.Column(db.Numeric(12, 2))
     location = db.Column(db.String(100))
     is_active = db.Column(db.Boolean, default=True)

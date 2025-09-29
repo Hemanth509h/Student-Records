@@ -143,12 +143,8 @@ def create_all_tables() -> bool:
     
     try:
         with app.app_context():
-            # Drop all tables first if they exist (for clean recreation)
-            print("  🧹 Cleaning up existing tables...")
-            db.drop_all()
-            
-            # Create all tables
-            print("  📄 Creating new tables...")
+            # Create all tables (don't drop first to avoid circular dependency issues)
+            print("  📄 Creating tables...")
             db.create_all()
             
             # Verify table creation by counting tables
