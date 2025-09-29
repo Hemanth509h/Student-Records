@@ -6,3 +6,9 @@ flask-wtf>=1.2.2
 gunicorn>=23.0.0
 psycopg2-binary>=2.9.10
 sqlalchemy>=2.0.0
+email_validator
+flask
+flask-sqlalchemy
+gunicorn
+psycopg2-binary
+werkzeug
