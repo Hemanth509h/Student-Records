@@ -75,7 +75,7 @@ def check_database_connection() -> bool:
     print("\n🔌 Checking database connection...")
     
     try:
-        database_url = os.environ.get('DATABASE_URL')
+        database_url =os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/studentdb')
         if not database_url:
             print("❌ DATABASE_URL environment variable not set")
             return False

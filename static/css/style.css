@@ -693,3 +693,7 @@ button {
 button:hover {
     background: #00c6ff;
 }
+#card-body{
+    height: 500px;
+    overflow-y: scroll;
+}
