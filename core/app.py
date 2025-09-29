@@ -280,7 +280,7 @@ def query():
             except Exception as e:
                 flash(f'Query error: {str(e)}', 'error')
     
-     return render_template('query.html', results=results or [])
+    return render_template('query.html', results=results or [])
 
 
 @app.route('/reports')
