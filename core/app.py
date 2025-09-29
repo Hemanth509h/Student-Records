@@ -56,6 +56,7 @@ except Exception as e:
 class AdminUser(UserMixin):
     def __init__(self):
         self.id = 1
+        self.username = "admin"
         self.email = "admin@studentrecords.com"
 
 admin_user = AdminUser()
