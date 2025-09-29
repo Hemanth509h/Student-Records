@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Student Record Management System{% endblock %}</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
+        /* CSS Reset and Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --bg-primary: #0d1117;
             --bg-secondary: #161b22;
@@ -37,77 +41,159 @@
             min-height: 100vh;
         }
 
+        /* Layout Classes */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container-fluid {
+            padding: 0 20px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+
+        .col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, 
+        .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+        .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
+        .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+            padding: 0 15px;
+            flex: 1;
+        }
+
+        .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+        .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+        .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+        .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+        .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+
+        /* Navigation */
         .navbar {
             background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
             backdrop-filter: blur(10px);
             border-bottom: 2px solid var(--border-color);
             box-shadow: var(--shadow);
+            padding: 12px 0;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.4rem;
-            color: var(--accent-blue) !important;
+            color: var(--accent-blue);
+            text-decoration: none;
             transition: all 0.3s ease;
         }
 
         .navbar-brand:hover {
-            color: var(--accent-green) !important;
+            color: var(--accent-green);
             transform: translateY(-1px);
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 10px;
         }
 
         .nav-link {
-            color: var(--text-primary) !important;
+            color: var(--text-primary);
+            text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
             border-radius: 6px;
-            margin: 0 2px;
-            padding: 8px 12px !important;
+            padding: 8px 12px;
         }
 
         .nav-link:hover {
-            color: var(--accent-blue) !important;
+            color: var(--accent-blue);
             background-color: var(--bg-hover);
             transform: translateY(-1px);
         }
 
-        .dropdown-menu {
-            background: var(--bg-secondary);
+        .navbar-toggler {
+            display: none;
+            background: none;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-        }
-
-        .dropdown-item {
+            padding: 8px 12px;
+            border-radius: 6px;
             color: var(--text-primary);
-            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        /* Forms */
+        .form-control {
+            background-color: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 8px;
             transition: all 0.3s ease;
+            padding: 12px 16px;
+            width: 100%;
+            font-size: 14px;
         }
 
-        .dropdown-item:hover {
-            background-color: var(--bg-hover);
-            color: var(--accent-blue);
-        }
-
-        .card {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-2px);
+        .form-control:focus {
+            background-color: var(--bg-secondary);
             border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+            color: var(--text-primary);
+            outline: none;
         }
 
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .input-group {
+            display: flex;
+            position: relative;
+        }
+
+        .input-group .form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .input-group .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        /* Buttons */
         .btn {
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s ease;
             border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -119,10 +205,6 @@
         .btn-primary {
             background: linear-gradient(135deg, #0969da 0%, #0860ca 100%);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #0860ca 0%, #0757ba 100%);
         }
 
         .btn-success {
@@ -140,6 +222,11 @@
             color: white;
         }
 
+        .btn-info {
+            background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+            color: white;
+        }
+
         .btn-outline-light {
             border: 2px solid var(--border-color);
             color: var(--text-primary);
@@ -152,81 +239,126 @@
             border-color: var(--accent-blue);
         }
 
-        .form-control {
-            background-color: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 8px;
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             transition: all 0.3s ease;
-            padding: 12px 16px;
+            margin-bottom: 20px;
         }
 
-        .form-control:focus {
-            background-color: var(--bg-secondary);
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            margin: 0 0 10px 0;
             color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
-        .form-control::placeholder {
-            color: var(--text-muted);
-        }
-
-        .table-dark {
-            --bs-table-bg: var(--bg-secondary);
-            --bs-table-striped-bg: var(--bg-tertiary);
-            --bs-table-hover-bg: var(--bg-hover);
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--bg-secondary);
             border-radius: 8px;
             overflow: hidden;
             box-shadow: var(--shadow);
         }
 
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
         .table th {
             background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
-            border-color: var(--border-color);
-            color: var(--text-primary);
             font-weight: 600;
-            padding: 1rem 0.75rem;
         }
 
-        .table td {
-            border-color: var(--border-color);
-            color: var(--text-primary);
-            padding: 0.75rem;
-            vertical-align: middle;
+        .table tbody tr:hover {
+            background-color: var(--bg-hover);
         }
 
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Badges */
         .badge {
             border-radius: 6px;
             font-weight: 500;
             padding: 0.5em 0.75em;
             font-size: 0.85em;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline-block;
         }
 
         .badge.bg-success {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #32d74b 100%) !important;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #32d74b 100%);
+            color: white;
         }
 
         .badge.bg-warning {
-            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ffcc02 100%) !important;
-            color: #000 !important;
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ffcc02 100%);
+            color: black;
         }
 
         .badge.bg-danger {
-            background: linear-gradient(135deg, var(--accent-red) 0%, #ff6b6b 100%) !important;
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ff6b6b 100%);
+            color: white;
         }
 
         .badge.bg-info {
-            background: linear-gradient(135deg, #0dcaf0 0%, #58d3f7 100%) !important;
-            color: #000 !important;
+            background: linear-gradient(135deg, #0dcaf0 0%, #58d3f7 100%);
+            color: black;
         }
 
+        .badge.bg-primary {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #4c9aff 100%);
+            color: white;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #8b949e 100%);
+            color: white;
+        }
+
+        /* Alerts */
         .alert {
             border-radius: 8px;
             border: none;
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .alert-success {
@@ -253,20 +385,125 @@
             color: var(--accent-yellow);
         }
 
-        footer {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            border-top: 2px solid var(--border-color);
-            margin-top: 3rem;
+        .alert-dismissible {
+            padding-right: 50px;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .text-start { text-align: left; }
+        .text-muted { color: var(--text-muted); }
+        .text-primary { color: var(--accent-blue); }
+        .text-success { color: var(--accent-green); }
+        .text-danger { color: var(--accent-red); }
+        .text-warning { color: var(--accent-yellow); }
+
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mb-5 { margin-bottom: 3rem; }
+
+        .mt-0 { margin-top: 0; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 1rem; }
+        .mt-4 { margin-top: 1.5rem; }
+        .mt-5 { margin-top: 3rem; }
+
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 1rem; padding-bottom: 1rem; }
+        .py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .py-5 { padding-top: 3rem; padding-bottom: 3rem; }
+
+        .d-flex { display: flex; }
+        .d-none { display: none; }
+        .d-block { display: block; }
+
+        .fade { opacity: 0; transition: opacity 0.3s; }
+        .fade.show { opacity: 1; }
+
+        .me-1 { margin-right: 0.25rem; }
+        .me-2 { margin-right: 0.5rem; }
+        .me-3 { margin-right: 1rem; }
+
+        .fw-bold { font-weight: bold; }
+
+        .float-end { float: right; }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 200px;
+            z-index: 1000;
+            padding: 8px 0;
+            display: none;
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--accent-blue);
+        }
+
+        .dropdown-divider {
+            height: 0;
+            margin: 8px 0;
+            overflow: hidden;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+            content: "";
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
         }
 
         /* Login Styles */
-        #login {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 200px);
-        }
-
         .login-container {
             background: var(--bg-secondary);
             padding: 30px;
@@ -275,6 +512,7 @@
             width: 350px;
             text-align: center;
             border: 1px solid var(--border-color);
+            margin: 50px auto;
         }
 
         .login-container h2 {
@@ -282,13 +520,13 @@
             color: var(--text-primary);
         }
 
-        .input-group {
+        .input-group-login {
             position: relative;
             margin-bottom: 20px;
             text-align: left;
         }
 
-        .input-group input {
+        .input-group-login input {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border-color);
@@ -300,12 +538,12 @@
             color: var(--text-primary);
         }
 
-        .input-group input:focus {
+        .input-group-login input:focus {
             border-color: var(--accent-blue);
             box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
         }
 
-        .input-group label {
+        .input-group-login label {
             position: absolute;
             top: 12px;
             left: 12px;
@@ -316,8 +554,8 @@
             background: transparent;
         }
 
-        .input-group input:focus + label,
-        .input-group input:not(:placeholder-shown) + label {
+        .input-group-login input:focus + label,
+        .input-group-login input:not(:placeholder-shown) + label {
             top: -8px;
             left: 10px;
             font-size: 12px;
@@ -326,10 +564,44 @@
             color: var(--accent-blue);
         }
 
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-top: 2px solid var(--border-color);
+            margin-top: 3rem;
+            padding: 2rem 0;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
-            .card {
+            .container-fluid {
+                padding: 0 15px;
+            }
+
+            .row {
+                margin: 0 -10px;
+            }
+
+            .col, .col-md-6, .col-md-3, .col-md-4, .col-md-8, .col-md-12 {
+                padding: 0 10px;
+                flex: 0 0 100%;
+                max-width: 100%;
                 margin-bottom: 1rem;
+            }
+
+            .navbar-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+                gap: 5px;
+            }
+
+            .navbar-toggler {
+                display: block;
             }
 
             .btn {
@@ -343,87 +615,82 @@
 
             .login-container {
                 width: 90%;
-                margin: 20px;
+                margin: 20px auto;
+            }
+
+            .table {
+                font-size: 0.9rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 8px;
             }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+    <nav class="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-                <i class="fas fa-graduation-cap me-2"></i>
-                Student Records
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                {% if current_user.is_authenticated %}
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
+            <div class="navbar-container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Student Records
+                </a>
+                
+                <button class="navbar-toggler" type="button" onclick="toggleNav()">
+                    <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+                </button>
+                
+                <div class="navbar-nav" id="navbarNav">
+                    {% if current_user.is_authenticated %}
                         <a class="nav-link" href="{{ url_for('index') }}">
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('add_student') }}">
                             <i class="fas fa-user-plus me-1"></i>Add Student
                         </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('query') }}">
                             <i class="fas fa-search me-1"></i>Query
                         </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('reports') }}">
                             <i class="fas fa-chart-bar me-1"></i>Reports
                         </a>
-                    </li>
-                </ul>
-                
-                <!-- Search Form -->
-                <form class="d-flex me-3" method="GET" action="{{ url_for('search') }}">
-                    <div class="input-group">
-                        <input class="form-control" type="search" name="search" placeholder="Search students..." 
-                               value="{{ request.args.get('search', '') }}">
-                        <button class="btn btn-outline-light" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
-                
-                <!-- User Info and Actions -->
-                <div class="navbar-nav">
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>
-                            {{ current_user.username if current_user.username else current_user.email }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ url_for('export') }}">
-                                <i class="fas fa-download me-1"></i>Export Data
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
-                {% else %}
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                        
+                        <!-- Search Form -->
+                        <form class="d-flex me-3" method="GET" action="{{ url_for('search') }}" style="margin-left: 20px;">
+                            <div class="input-group">
+                                <input class="form-control" type="search" name="search" placeholder="Search students..." 
+                                       value="{{ request.args.get('search', '') }}">
+                                <button class="btn btn-outline-light" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- User Dropdown -->
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" onclick="toggleDropdown()" style="cursor: pointer;">
+                                <i class="fas fa-user me-1"></i>
+                                {{ current_user.username if current_user.username else current_user.email }}
+                            </a>
+                            <div class="dropdown-menu" id="userDropdown">
+                                <a class="dropdown-item" href="{{ url_for('export') }}">
+                                    <i class="fas fa-download me-1"></i>Export Data
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
                         <a class="nav-link" href="{{ url_for('login') }}">
                             <i class="fas fa-sign-in-alt me-1"></i>Login
                         </a>
-                    </li>
-                </ul>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
@@ -442,7 +709,7 @@
                             <i class="fas fa-info-circle me-2"></i>
                         {% endif %}
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';" aria-label="Close">&times;</button>
                     </div>
                 {% endfor %}
             </div>
@@ -455,7 +722,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-3 mt-5">
+    <footer class="footer">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
@@ -473,18 +740,31 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
+        // Navigation toggle for mobile
+        function toggleNav() {
+            const nav = document.getElementById('navbarNav');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Dropdown toggle
+        function toggleDropdown() {
+            const dropdown = document.querySelector('.dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-toggle')) {
+                const dropdowns = document.getElementsByClassName('dropdown');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+
         // Simple form validation
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-
             // Form validation
             const forms = document.querySelectorAll('.needs-validation');
             forms.forEach(function(form) {
