@@ -11,8 +11,342 @@
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-hover: #30363d;
+            --border-color: #30363d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent-blue) !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-green) !important;
+            transform: translateY(-1px);
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            margin: 0 2px;
+            padding: 8px 12px !important;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-blue) !important;
+            background-color: var(--bg-hover);
+            transform: translateY(-1px);
+        }
+
+        .dropdown-menu {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--accent-blue);
+        }
+
+        .card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0969da 0%, #0860ca 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0860ca 0%, #0757ba 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #238636 0%, #1f7b2f 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #da3633 0%, #c62522 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #bf8700 0%, #a67700 100%);
+            color: white;
+        }
+
+        .btn-outline-light {
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .btn-outline-light:hover {
+            background: var(--bg-hover);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .form-control {
+            background-color: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 12px 16px;
+        }
+
+        .form-control:focus {
+            background-color: var(--bg-secondary);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .table-dark {
+            --bs-table-bg: var(--bg-secondary);
+            --bs-table-striped-bg: var(--bg-tertiary);
+            --bs-table-hover-bg: var(--bg-hover);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table th {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            vertical-align: middle;
+        }
+
+        .badge {
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.5em 0.75em;
+            font-size: 0.85em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #32d74b 100%) !important;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ffcc02 100%) !important;
+            color: #000 !important;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ff6b6b 100%) !important;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, #0dcaf0 0%, #58d3f7 100%) !important;
+            color: #000 !important;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(63, 185, 80, 0.1) 0%, rgba(63, 185, 80, 0.05) 100%);
+            border-left: 4px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(248, 81, 73, 0.1) 0%, rgba(248, 81, 73, 0.05) 100%);
+            border-left: 4px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(88, 166, 255, 0.05) 100%);
+            border-left: 4px solid var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(210, 153, 34, 0.1) 0%, rgba(210, 153, 34, 0.05) 100%);
+            border-left: 4px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-top: 2px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        /* Login Styles */
+        #login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 200px);
+        }
+
+        .login-container {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 350px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: 0.3s;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -8px;
+            left: 10px;
+            font-size: 12px;
+            background: var(--bg-secondary);
+            padding: 0 5px;
+            color: var(--accent-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .login-container {
+                width: 90%;
+                margin: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -23,7 +357,7 @@
                 Student Records
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -65,8 +399,8 @@
                 
                 <!-- User Info and Actions -->
                 <div class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>
                             {{ current_user.username if current_user.username else current_user.email }}
                         </a>
@@ -79,7 +413,7 @@
                                 <i class="fas fa-sign-out-alt me-1"></i>Logout
                             </a></li>
                         </ul>
-                    </li>
+                    </div>
                 </div>
                 {% else %}
                 <ul class="navbar-nav ms-auto">
@@ -108,7 +442,7 @@
                             <i class="fas fa-info-circle me-2"></i>
                         {% endif %}
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -142,8 +476,53 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Simple form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Form validation
+            const forms = document.querySelectorAll('.needs-validation');
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // Delete confirmation
+            const deleteButtons = document.querySelectorAll('a[href*="delete_student"]');
+            deleteButtons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('input[name="search"]');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const tableRows = document.querySelectorAll('table tbody tr');
+                    
+                    tableRows.forEach(function(row) {
+                        const text = row.textContent.toLowerCase();
+                        const isVisible = text.includes(searchTerm);
+                        row.style.display = isVisible ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
     
     {% block scripts %}{% endblock %}
 </body>

@@ -76,30 +76,13 @@
                         </div>
                     </div>
                     
-                    <!-- Preview Section -->
-                    <div class="card bg-dark border-secondary mb-3" id="preview-card" style="display: none;">
-                        <div class="card-header">
-                            <h6 class="mb-0">
-                                <i class="fas fa-eye me-1"></i>Preview
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div id="preview-content"></div>
-                        </div>
-                    </div>
-                    
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                         </a>
-                        <div>
-                            <button type="button" class="btn btn-info me-2" id="preview-btn">
-                                <i class="fas fa-eye me-1"></i>Preview
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i>Add Student
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Add Student
+                        </button>
                     </div>
                 </form>
             </div>
@@ -123,117 +106,45 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
-// Form validation
-(function() {
-    'use strict';
-    window.addEventListener('load', function() {
-        var forms = document.getElementsByClassName('needs-validation');
-        var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-    }, false);
-})();
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    forms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
 
-// Preview functionality
-document.getElementById('preview-btn').addEventListener('click', function() {
-    const rollNo = document.getElementById('roll_no').value.trim();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const coursesStr = document.getElementById('courses').value.trim();
-    const gradesStr = document.getElementById('grades').value.trim();
+    // Real-time validation for courses and grades match
+    const coursesInput = document.getElementById('courses');
+    const gradesInput = document.getElementById('grades');
     
-    if (!rollNo || !name || !email || !coursesStr || !gradesStr) {
-        alert('Please fill in all fields to preview');
-        return;
-    }
-    
-    try {
-        const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
-        const grades = gradesStr.split(',').map(g => parseFloat(g.trim())).filter(g => !isNaN(g));
+    function validateCoursesAndGrades() {
+        const coursesStr = coursesInput.value.trim();
+        const gradesStr = gradesInput.value.trim();
         
-        if (courses.length !== grades.length) {
-            alert('Number of courses must match number of grades');
-            return;
+        if (coursesStr && gradesStr) {
+            const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
+            const grades = gradesStr.split(',').map(g => g.trim()).filter(g => g && !isNaN(parseFloat(g)));
+            
+            if (courses.length !== grades.length) {
+                coursesInput.setCustomValidity('Number of courses must match number of grades');
+                gradesInput.setCustomValidity('Number of grades must match number of courses');
+            } else {
+                coursesInput.setCustomValidity('');
+                gradesInput.setCustomValidity('');
+            }
         }
-        
-        const avgGrade = grades.reduce((a, b) => a + b, 0) / grades.length;
-        
-        let previewHtml = `
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Roll No:</strong> <span class="badge bg-primary">${rollNo}</span></p>
-                    <p><strong>Name:</strong> ${name}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Courses:</strong></p>
-                    <div class="mb-2">
-        `;
-        
-        courses.forEach(course => {
-            previewHtml += `<span class="badge bg-secondary me-1">${course}</span>`;
-        });
-        
-        previewHtml += `
-                    </div>
-                    <p><strong>Grades:</strong></p>
-                    <div class="mb-2">
-        `;
-        
-        grades.forEach(grade => {
-            const badgeClass = grade >= 90 ? 'success' : grade >= 80 ? 'info' : grade >= 70 ? 'warning' : 'danger';
-            previewHtml += `<span class="badge bg-${badgeClass} me-1">${grade}</span>`;
-        });
-        
-        const avgBadgeClass = avgGrade >= 90 ? 'success' : avgGrade >= 80 ? 'info' : avgGrade >= 70 ? 'warning' : 'danger';
-        previewHtml += `
-                    </div>
-                    <p><strong>Average Grade:</strong> <span class="badge bg-${avgBadgeClass}">${avgGrade.toFixed(1)}</span></p>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('preview-content').innerHTML = previewHtml;
-        document.getElementById('preview-card').style.display = 'block';
-        
-    } catch (error) {
-        alert('Error generating preview. Please check your input.');
     }
+    
+    coursesInput.addEventListener('input', validateCoursesAndGrades);
+    gradesInput.addEventListener('input', validateCoursesAndGrades);
 });
-
-// Real-time validation feedback
-document.getElementById('courses').addEventListener('input', validateCoursesAndGrades);
-document.getElementById('grades').addEventListener('input', validateCoursesAndGrades);
-
-function validateCoursesAndGrades() {
-    const coursesStr = document.getElementById('courses').value.trim();
-    const gradesStr = document.getElementById('grades').value.trim();
-    
-    if (coursesStr && gradesStr) {
-        const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
-        const grades = gradesStr.split(',').map(g => g.trim()).filter(g => g);
-        
-        const coursesInput = document.getElementById('courses');
-        const gradesInput = document.getElementById('grades');
-        
-        if (courses.length !== grades.length) {
-            coursesInput.setCustomValidity('Number of courses must match number of grades');
-            gradesInput.setCustomValidity('Number of grades must match number of courses');
-        } else {
-            coursesInput.setCustomValidity('');
-            gradesInput.setCustomValidity('');
-        }
-    }
-}
 </script>
 {% endblock %}

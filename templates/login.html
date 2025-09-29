@@ -4,57 +4,21 @@
 
 {% block content %} 
 <div id="login">
-<div class="login-container">
-    <h2>Admin Login</h2>
-    <form id="loginForm" autocomplete="off" method="post">
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <form method="post">
+            <div class="input-group">
+                <input type="text" id="email" name="email" required placeholder=" " autocomplete="username" />
+                <label for="email">Admin Email ID</label>
+            </div>
 
-      <div class="input-group">
-        <input type="text" id="email" name="email" required placeholder=" " autocomplete="username" />
-        <label for="email">Admin Email ID</label>
-      </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password" />
+                <label for="password">Password</label>
+            </div>
 
-      <div class="input-group">
-        <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password" />
-        <label for="password">Password</label>
-      </div>
-
-      <button type="submit">Login</button>
-    </form>
-  </div>
-  </div>
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        const form = document.getElementById('loginForm');
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                // Check if it's a redirect response
-                if (response.redirected || response.status === 302) {
-                    window.location.href = response.url || '/';
-                } else {
-                    // If successful but not redirect, go to dashboard
-                    window.location.href = '/';
-                }
-            } else {
-                // Show error message
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'alert alert-danger mt-3';
-                errorDiv.textContent = 'Invalid email or password. Please try again.';
-                form.appendChild(errorDiv);
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
-        }
-    });
-  </script>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
