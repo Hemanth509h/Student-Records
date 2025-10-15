@@ -25,13 +25,13 @@
                         </div>
                     </div>
                     
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-play me-1"></i>Execute Query
                         </button>
                         
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#samplesModal">
+                            <button type="button" class="btn btn-outline-info" onclick="toggleSamples()">
                                 <i class="fas fa-lightbulb me-1"></i>Example Queries
                             </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="clearQuery()">
@@ -92,37 +92,38 @@
 </div>
 {% endif %}
 
-<!-- Sample Queries Modal -->
-<div class="modal fade" id="samplesModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
+<!-- Sample Queries Section -->
+<div id="samplesSection" class="row mt-4" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="card-title mb-0">
                     <i class="fas fa-lightbulb me-2"></i>Example Queries
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleSamples()">
+                    <i class="fas fa-times"></i> Close
+                </button>
             </div>
-            <div class="modal-body">
-                <div class="list-group">
-                    <div class="list-group-item">
+            <div class="card-body">
+                <div style="display: grid; gap: 15px;">
+                    <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT * FROM students')">
                         <h6 class="mb-1">Basic Selection</h6>
-                        <code class="d-block mb-2">SELECT * FROM students</code>
+                        <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT * FROM students</code>
                         <small class="text-muted">Get all students</small>
                     </div>
                     
-                    
-                    
-                    <div class="list-group-item">
+                    <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT * FROM students WHERE name LIKE \'%Alexander%\'')">
                         <h6 class="mb-1">Search by Name</h6>
-                        <code class="d-block mb-2">SELECT * FROM students WHERE name LIKE 'Alexander Long'</code>
-                        <small class="text-muted">Find students with 'John' in their name</small>
+                        <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT * FROM students WHERE name LIKE '%Alexander%'</code>
+                        <small class="text-muted">Find students with 'Alexander' in their name</small>
                     </div>
-                    
-                  
+
+                    <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT roll_no, name, email FROM students ORDER BY name')">
+                        <h6 class="mb-1">Sorted Results</h6>
+                        <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT roll_no, name, email FROM students ORDER BY name</code>
+                        <small class="text-muted">Get students sorted by name</small>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -181,38 +182,34 @@ function clearQuery() {
     document.getElementById('query').focus();
 }
 
-// Add sample query to textarea when clicked
+function toggleSamples() {
+    const samplesSection = document.getElementById('samplesSection');
+    if (samplesSection.style.display === 'none') {
+        samplesSection.style.display = 'block';
+    } else {
+        samplesSection.style.display = 'none';
+    }
+}
+
+function useQuery(queryText) {
+    document.getElementById('query').value = queryText;
+    document.getElementById('samplesSection').style.display = 'none';
+    document.getElementById('query').focus();
+}
+
+// Syntax highlighting on blur
 document.addEventListener('DOMContentLoaded', function() {
-    const codeElements = document.querySelectorAll('#samplesModal code');
-    codeElements.forEach(code => {
-        code.style.cursor = 'pointer';
-        code.addEventListener('click', function() {
-            document.getElementById('query').value = this.textContent;
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('samplesModal'));
-            modal.hide();
-            // Focus on query input
-            document.getElementById('query').focus();
+    document.getElementById('query').addEventListener('blur', function() {
+        const sqlKeywords = ['SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'LIMIT', 'AND', 'OR', 'LIKE', 'IN'];
+        let value = this.value;
+        
+        sqlKeywords.forEach(keyword => {
+            const regex = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'gi');
+            value = value.replace(regex, keyword);
         });
+        
+        this.value = value;
     });
-});
-
-// Syntax highlighting (basic)
-document.getElementById('query').addEventListener('input', function() {
-    // Basic highlighting could be added here
-    // For now, just uppercase SQL keywords on blur
-});
-
-document.getElementById('query').addEventListener('blur', function() {
-    const sqlKeywords = ['SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'LIMIT', 'AND', 'OR', 'LIKE', 'IN'];
-    let value = this.value;
-    
-    sqlKeywords.forEach(keyword => {
-        const regex = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'gi');
-        value = value.replace(regex, keyword);
-    });
-    
-    this.value = value;
 });
 </script>
 {% endblock %}

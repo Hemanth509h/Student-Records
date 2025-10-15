@@ -20,7 +20,7 @@ if not app.secret_key:
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
 # Database configuration - PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/studentdb')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/postgres')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
