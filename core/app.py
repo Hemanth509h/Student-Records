@@ -12,12 +12,12 @@ import json
 # Create Flask app
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
-
-app.secret_key = os.environ.get("SESSION_SECRET" ,"student_records0192837465")
+# Set secret key from environment or generate random for development
+app.secret_key = os.environ.get("SESSION_SECRET")
 if not app.secret_key:
     # Generate a random secret for development only
     app.secret_key = secrets.token_hex(32)
-    print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
+    print("WARNING: Using generated random secret key for development. Set SESSION_SECRET environment variable in production.")
 
 # Database configuration - SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
@@ -46,21 +46,10 @@ try:
 except Exception as e:
     print(f"Warning: Could not initialize database: {e}")
     print("Database will be created on first use")
-    
-# Hardcoded admin user
-class AdminUser(UserMixin):
-    def __init__(self):
-        self.id = 1
-        self.username = "admin"
-        self.email = "admin@studentrecords.com"
-
-admin_user = AdminUser()
 
 @login_manager.user_loader
 def load_user(user_id):
-    # Support both hardcoded admin and DB users
-    if str(user_id) == "1":
-        return admin_user
+    """Load user from database by ID"""
     return User.query.get(int(user_id))
 
 # --- Login route ---
@@ -75,13 +64,7 @@ def login():
             flash('Email and password are required', 'error')
             return render_template('login.html')
         
-        # Check for hardcoded admin
-        if email == "admin@school.com" and password == "admin123":
-            login_user(admin_user)
-            flash('Login successful!', 'success')
-            return redirect(url_for('index'))
-        
-        # Database users (if you want to allow them)
+        # Check database users
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user)

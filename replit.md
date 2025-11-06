@@ -2,14 +2,16 @@
 
 ## Overview
 
-This is a Flask-based web application for managing student records with a PostgreSQL database backend. The system provides a platform for storing, retrieving, querying, and analyzing student data with a clean, modern interface.
+This is a Flask-based web application for managing student records with a SQLite database backend. The system provides a platform for storing, retrieving, querying, and analyzing student data with a clean, modern interface.
 
-## Recent Changes (October 15, 2025)
+## Recent Changes (November 6, 2025)
 
-- **Database Schema Cleanup**: Simplified from 35+ tables to only 2 essential tables (users and students)
-- **Models Simplified**: Removed all unused models, keeping only User and Student
-- **create_tables.py Updated**: Simplified initialization script for the streamlined schema
+- **Database Migration**: Successfully migrated from PostgreSQL to SQLite for simplified deployment
+- **Models Updated**: Converted PostgreSQL ARRAY types to JSON for SQLite compatibility
+- **Dependencies Cleaned**: Removed psycopg2-binary and PostgreSQL-specific dependencies
+- **Database File**: Using `students.db` as the local SQLite database
 - **Migration Completed**: Successfully migrated from Replit Agent to standard Replit environment
+- **Sample Data**: Populated with 5000+ student records and multiple user accounts
 
 ## User Preferences
 
@@ -19,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Architecture
 - **Web Framework**: Flask serves as the main application layer providing routes, template rendering, and request handling
-- **Database**: PostgreSQL database with SQLAlchemy ORM for data persistence
+- **Database**: SQLite database with SQLAlchemy ORM for data persistence
 - **Authentication**: Flask-Login for user session management with role-based access control
 - **Models**: User model for authentication and Student model for student records with courses and grades
 
@@ -31,7 +33,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Database Schema
 - **users**: User accounts with email, password hash, role, and profile information
-- **students**: Student records with roll number, name, email, courses (array), and grades (array)
+- **students**: Student records with roll number, name, email, courses (JSON), and grades (JSON)
 
 ### Security and Session Management
 - **Session Handling**: Flask sessions with environment-configurable secret keys (SESSION_SECRET)
@@ -49,14 +51,17 @@ Preferred communication style: Simple, everyday language.
 - **Flask**: Core web framework handling routing, templating, and request processing
 - **Flask-SQLAlchemy**: ORM for database operations
 - **Flask-Login**: User session and authentication management
-- **psycopg2-binary**: PostgreSQL database adapter
+- **Flask-WTF**: Form handling and validation
 - **Gunicorn**: Production-ready WSGI HTTP server
 - **email-validator**: Email validation utilities
+- **SQLAlchemy**: Database toolkit and ORM
+- **Werkzeug**: WSGI utilities and security features
 
 ### Development Environment
 - **Replit Platform**: Configured for cloud-based development with proper host binding (0.0.0.0:5000)
-- **Environment Variables**: DATABASE_URL and SESSION_SECRET for configuration management
+- **Environment Variables**: SESSION_SECRET for secure session management
 - **Deployment**: Configured for autoscale deployment with Gunicorn
+- **Database**: SQLite file-based database (`students.db`)
 
 ## Application Features
 
@@ -73,6 +78,11 @@ Preferred communication style: Simple, everyday language.
 - Protected routes requiring authentication
 - Role-based user system (admin, teacher, student, parent, staff)
 
+### Sample Data
+- 5000+ student records with realistic data
+- Multiple user accounts with different roles
+- Diverse course and grade combinations
+
 ## Project Structure
 ```
 /
@@ -88,6 +98,58 @@ Preferred communication style: Simple, everyday language.
 │   ├── query.html      # Custom SQL query interface
 │   └── reports.html    # Analytics and reports
 ├── main.py             # Application entry point
-├── create_tables.py    # Database initialization script
-└── requirements.txt    # Python dependencies
+├── add_5000_students.py  # Data population script
+├── requirements.txt    # Python dependencies
+└── students.db         # SQLite database file
 ```
+
+## Default Login Credentials
+
+**Admin Account:**
+- Email: admin@school.com
+- Password: admin123
+
+## Database Information
+
+- **Type**: SQLite (file-based)
+- **Location**: `students.db` in project root
+- **Tables**: users, students
+- **Data Format**: JSON for arrays (courses and grades)
+
+## Development
+
+### Running the Application
+The application is configured to run automatically with Gunicorn on port 5000:
+```bash
+gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
+```
+
+### Populating Sample Data
+Run the data population script to add 5000+ students:
+```bash
+python add_5000_students.py
+```
+
+### Key Features for Developers
+- Automatic database initialization on startup
+- Hot reload enabled in development
+- Debug logging configured
+- Session management with secure cookies
+- CSRF protection with Flask-WTF
+
+## Deployment
+
+- **Target**: Replit Autoscale
+- **Server**: Gunicorn WSGI server
+- **Port**: 5000
+- **Database**: SQLite (persisted in deployment)
+- **Environment**: Python 3.11
+
+## Security Notes
+
+- Never commit the database file with real user data
+- Change default admin credentials in production
+- Set SESSION_SECRET environment variable
+- All passwords are hashed with Werkzeug
+- SQL queries are parameterized to prevent injection
+- Input validation on both client and server sides

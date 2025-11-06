@@ -1,7 +1,7 @@
 # Student Record Management System - Team Work Division
 
 ## Project Overview
-This is a Flask-based Student Record Management System with PostgreSQL database. The project is divided into **5 parts** - **3 Frontend** and **2 Backend** components for team collaboration.
+This is a Flask-based Student Record Management System with SQLite database. The project is divided into **5 parts** - **3 Frontend** and **2 Backend** components for team collaboration.
 
 ---
 
@@ -191,8 +191,7 @@ GET    /export         # Export data as JSON
 core/
 └── models.py          # Database models (User, Student)
 
-create_tables.py       # Database initialization script
-add_5000_students.py   # Sample data generator (optional)
+add_5000_students.py   # Sample data generator
 ```
 
 **Database Models:**
@@ -203,7 +202,7 @@ add_5000_students.py   # Sample data generator (optional)
 - email (Unique, Indexed)
 - username
 - password_hash
-- role (admin/teacher/student/parent/staff)
+- role (admin/teacher/student/parent/staff) - stored as string
 - first_name, last_name
 - phone
 - active (Boolean)
@@ -218,26 +217,25 @@ add_5000_students.py   # Sample data generator (optional)
 - roll_no (Unique)
 - name
 - email
-- courses (Array of strings)
-- grades (Array of numeric values)
+- courses (JSON array of strings)
+- grades (JSON array of numeric values)
 - created_at
 ```
 
 **Key Features:**
-- PostgreSQL ARRAY data types for courses and grades
+- JSON data types for courses and grades (SQLite compatible)
 - Model methods:
   - `to_dict()` - Convert model to dictionary
   - `get_average_grade()` - Calculate student's average
-- Database relationships and constraints
+- Database constraints and validation
 - Index optimization for search queries
 - Data validation at model level
-- Migration scripts for schema updates
+- Sample data generation script
 
 **Technologies:**
 - Flask-SQLAlchemy ORM
-- PostgreSQL database
-- psycopg2-binary driver
-- SQLAlchemy migrations (optional)
+- SQLite database
+- SQLAlchemy ORM features
 
 ---
 
@@ -249,20 +247,18 @@ add_5000_students.py   # Sample data generator (optional)
 # Install dependencies
 pip install -r requirements.txt
 
-# Set environment variables
-DATABASE_URL=postgresql://user:password@host:port/database
+# Set environment variables (optional)
 SESSION_SECRET=your-secret-key-here
 ```
 
 ### Dependencies (requirements.txt)
 ```
+email-validator>=2.2.0
 flask>=3.1.2
 flask-login>=0.6.3
 flask-sqlalchemy>=3.1.1
 flask-wtf>=1.2.2
-email-validator>=2.2.0
 gunicorn>=23.0.0
-psycopg2-binary>=2.9.10
 sqlalchemy>=2.0.0
 werkzeug
 ```
@@ -339,7 +335,7 @@ Redirect to dashboard → Template renders updated data
 - Flask Documentation: https://flask.palletsprojects.com/
 - Bootstrap 5: https://getbootstrap.com/docs/5.3/
 - SQLAlchemy: https://docs.sqlalchemy.org/
-- PostgreSQL Arrays: https://www.postgresql.org/docs/current/arrays.html
+- SQLite JSON Functions: https://www.sqlite.org/json1.html
 
 ### Design Assets
 - Dark Theme Color Palette: Primary (#0d6efd), Dark Background (#212529)
@@ -358,13 +354,30 @@ Redirect to dashboard → Template renders updated data
 
 ### Database
 - Default admin login: `admin@school.com` / `admin123`
-- PostgreSQL required (Replit provides this)
+- SQLite database file: `students.db`
 - Use SQLAlchemy ORM for all database operations
+- JSON fields for arrays (courses and grades)
 
 ### Deployment
 - Application runs on port 5000
 - Gunicorn used as WSGI server
 - Configured for Replit autoscale deployment
+- Database file persists across deployments
+
+---
+
+## 📝 Sample Data
+
+The project includes a script to populate 5000+ student records:
+```bash
+python add_5000_students.py
+```
+
+This creates:
+- 5000+ students with realistic names, emails, and roll numbers
+- Diverse course assignments (Math, Science, English, History, etc.)
+- Varied grade distributions
+- Multiple user accounts for testing
 
 ---
 
