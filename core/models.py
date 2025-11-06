@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
 from flask_login import UserMixin
 from enum import Enum
@@ -19,7 +18,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     username = db.Column(db.String(80), nullable=True)
     password_hash = db.Column(db.String(256), nullable=False)
-    role = db.Column(db.Enum(UserRole), default=UserRole.STUDENT)
+    role = db.Column(db.String(20), default='student')  # Changed from Enum to String for SQLite
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     phone = db.Column(db.String(20))
@@ -43,8 +42,8 @@ class Student(db.Model):
     roll_no = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    courses = db.Column(ARRAY(db.String), nullable=False)
-    grades = db.Column(ARRAY(db.Numeric), nullable=False)
+    courses = db.Column(db.JSON, nullable=False)  # Changed from ARRAY to JSON for SQLite
+    grades = db.Column(db.JSON, nullable=False)   # Changed from ARRAY to JSON for SQLite
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def __repr__(self):

@@ -19,13 +19,8 @@ if not app.secret_key:
     app.secret_key = secrets.token_hex(32)
     print("WARNING: Using generated secret key for development. Set SESSION_SECRET environment variable in production.")
 
-# Database configuration - PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:12345678@localhost:5432/postgres')
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
-
+# Database configuration - SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
