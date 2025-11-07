@@ -118,7 +118,7 @@ templates/
 ## ⚙️ BACKEND PARTS (2)
 
 ### **Backend Part 1: Core Application & Routes**
-**Assigned to:** _Team Member Name_
+**Assigned to:** _Sameer_
 
 **Responsibilities:**
 - Flask application setup and configuration
