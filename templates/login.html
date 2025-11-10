@@ -1,24 +1,49 @@
+<!-- Extend base.html template to inherit navigation, styles, and layout -->
 {% extends "base.html" %}
 
+<!-- Override the title block from base.html with custom page title -->
 {% block title %}Login{% endblock %}
 
+<!-- Main content block - this replaces the content section in base.html -->
 {% block content %} 
+<!-- Main login wrapper div -->
 <div id="login">
+    <!-- Login container with centered box styling (defined in base.html CSS) -->
     <div class="login-container">
+        <!-- Page heading -->
         <h2>Admin Login</h2>
+        
+        <!-- Login form - method="post" sends data securely to server -->
         <form method="post">
+            <!-- Email input group with floating label effect -->
             <div class="input-group-login">
+                <!-- Email input field -->
+                <!-- type="text" allows email format -->
+                <!-- required makes this field mandatory -->
+                <!-- placeholder=" " enables floating label CSS trick -->
+                <!-- autocomplete="username" helps password managers -->
                 <input type="text" id="email" name="email" required placeholder=" " autocomplete="username" />
+                <!-- Floating label that moves up when input is focused or filled -->
                 <label for="email">Admin Email ID</label>
             </div>
 
+            <!-- Password input group with floating label effect -->
             <div class="input-group-login">
+                <!-- Password input field -->
+                <!-- type="password" masks the entered characters -->
+                <!-- autocomplete="current-password" helps password managers -->
                 <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password" />
+                <!-- Floating label for password field -->
                 <label for="password">Password</label>
             </div>
 
+            <!-- Submit button to send form data -->
+            <!-- type="submit" triggers form submission -->
+            <!-- btn btn-primary classes from base.html for styling -->
+            <!-- width: 100% makes button span full container width -->
             <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
         </form>
     </div>
 </div>
+<!-- End of content block -->
 {% endblock %}
