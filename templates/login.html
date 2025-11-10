@@ -1,49 +1,62 @@
-<!-- Extend base.html template to inherit navigation, styles, and layout -->
+<!-- Jinja2 template directive - extends base.html to inherit its structure, navigation, styles, and layout -->
 {% extends "base.html" %}
 
-<!-- Override the title block from base.html with custom page title -->
+<!-- Jinja2 block directive - overrides the title block from base.html with custom page title for this specific page -->
 {% block title %}Login{% endblock %}
 
-<!-- Main content block - this replaces the content section in base.html -->
+<!-- Jinja2 block directive - defines the main content block that replaces the content section in base.html -->
 {% block content %} 
-<!-- Main login wrapper div -->
+<!-- Main login wrapper div with unique ID for styling and JavaScript targeting -->
 <div id="login">
-    <!-- Login container with centered box styling (defined in base.html CSS) -->
+    <!-- Login container div with centered box styling defined in base.html CSS (includes shadow, border, padding) -->
     <div class="login-container">
-        <!-- Page heading -->
+        <!-- Page heading element - displays "Admin Login" as the main title -->
         <h2>Admin Login</h2>
         
-        <!-- Login form - method="post" sends data securely to server -->
+        <!-- Login form element - method="post" sends form data securely to server via HTTP POST request -->
         <form method="post">
-            <!-- Email input group with floating label effect -->
+            <!-- Email input group div with floating label effect styling from base.html -->
             <div class="input-group-login">
-                <!-- Email input field -->
-                <!-- type="text" allows email format -->
-                <!-- required makes this field mandatory -->
-                <!-- placeholder=" " enables floating label CSS trick -->
-                <!-- autocomplete="username" helps password managers -->
+                <!-- Email input field element -->
+                <!-- type="text" allows text input (could be email type but text provides more flexibility) -->
+                <!-- id="email" provides unique identifier for label association and JavaScript -->
+                <!-- name="email" is the key used when form data is submitted to server -->
+                <!-- required attribute makes this field mandatory before form submission -->
+                <!-- placeholder=" " (single space) enables floating label CSS trick with :placeholder-shown pseudo-class -->
+                <!-- autocomplete="username" helps browser password managers identify this as username field -->
                 <input type="text" id="email" name="email" required placeholder=" " autocomplete="username" />
-                <!-- Floating label that moves up when input is focused or filled -->
+                <!-- Label element for email input - "for" attribute links to input's id -->
+                <!-- Floating label that moves up when input is focused or filled (CSS animation in base.html) -->
                 <label for="email">Admin Email ID</label>
+            <!-- Closing div for email input group -->
             </div>
 
-            <!-- Password input group with floating label effect -->
+            <!-- Password input group div with floating label effect styling from base.html -->
             <div class="input-group-login">
-                <!-- Password input field -->
-                <!-- type="password" masks the entered characters -->
-                <!-- autocomplete="current-password" helps password managers -->
+                <!-- Password input field element -->
+                <!-- type="password" masks the entered characters for security (displays dots instead of text) -->
+                <!-- id="password" provides unique identifier for label association and JavaScript -->
+                <!-- name="password" is the key used when form data is submitted to server -->
+                <!-- required attribute makes this field mandatory before form submission -->
+                <!-- placeholder=" " (single space) enables floating label CSS trick -->
+                <!-- autocomplete="current-password" helps browser password managers identify and save password -->
                 <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password" />
-                <!-- Floating label for password field -->
+                <!-- Label element for password field - "for" attribute links to input's id -->
+                <!-- Floating label for password field that moves up on focus or when filled -->
                 <label for="password">Password</label>
+            <!-- Closing div for password input group -->
             </div>
 
-            <!-- Submit button to send form data -->
-            <!-- type="submit" triggers form submission -->
-            <!-- btn btn-primary classes from base.html for styling -->
-            <!-- width: 100% makes button span full container width -->
+            <!-- Submit button element to send form data to server -->
+            <!-- type="submit" triggers form submission when clicked -->
+            <!-- class="btn btn-primary" applies button styling classes from base.html (blue gradient background) -->
+            <!-- style="width: 100%;" inline CSS makes button span full width of container -->
             <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+        <!-- Closing form tag -->
         </form>
+    <!-- Closing div for login-container -->
     </div>
+<!-- Closing div for login wrapper -->
 </div>
-<!-- End of content block -->
+<!-- Jinja2 endblock directive - marks the end of content block -->
 {% endblock %}

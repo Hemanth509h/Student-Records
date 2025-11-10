@@ -1,86 +1,130 @@
+<!-- Extends base.html to inherit navigation, footer, and styling -->
 {% extends "base.html" %}
 
+<!-- Sets the page title that appears in the browser tab -->
 {% block title %}Add Student - Student Records{% endblock %}
 
+<!-- Main content block that replaces base.html content section -->
 {% block content %}
+<!-- Row with centered content using justify-content-center class -->
 <div class="row justify-content-center">
+    <!-- Column takes 8/12 width (66%) on medium+ screens, full width on mobile -->
     <div class="col-md-8">
+        <!-- Card container for the form with gradient background and shadow -->
         <div class="card">
+            <!-- Card header section with gradient background -->
             <div class="card-header">
+                <!-- Header title with icon, no bottom margin -->
                 <h4 class="card-title mb-0">
+                    <!-- User plus icon from Font Awesome -->
                     <i class="fas fa-user-plus me-2"></i>Add New Student
                 </h4>
             </div>
+            <!-- Card body contains the actual form -->
             <div class="card-body">
+                <!-- Form element - POST method sends data to server, needs-validation class for validation, novalidate prevents browser default validation -->
                 <form method="POST" class="needs-validation" novalidate>
+                    <!-- Row container for side-by-side fields -->
                     <div class="row">
+                        <!-- Roll number field - takes half width on medium+ screens -->
                         <div class="col-md-6 mb-3">
+                            <!-- Label for roll number input -->
                             <label for="roll_no" class="form-label">
+                                <!-- ID badge icon -->
                                 <i class="fas fa-id-badge me-1"></i>Roll Number *
                             </label>
+                            <!-- Text input for roll number - required field -->
                             <input type="text" class="form-control" id="roll_no" name="roll_no" 
                                    placeholder="Enter roll number" required>
+                            <!-- Validation error message shown if field is invalid -->
                             <div class="invalid-feedback">
                                 Please provide a valid roll number.
                             </div>
                         </div>
                         
+                        <!-- Name field - takes half width on medium+ screens -->
                         <div class="col-md-6 mb-3">
+                            <!-- Label for name input -->
                             <label for="name" class="form-label">
+                                <!-- User icon -->
                                 <i class="fas fa-user me-1"></i>Full Name *
                             </label>
+                            <!-- Text input for student name - required field -->
                             <input type="text" class="form-control" id="name" name="name" 
                                    placeholder="Enter full name" required>
+                            <!-- Validation error message -->
                             <div class="invalid-feedback">
                                 Please provide a valid name.
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Email field - full width -->
                     <div class="mb-3">
+                        <!-- Label for email input -->
                         <label for="email" class="form-label">
+                            <!-- Envelope icon -->
                             <i class="fas fa-envelope me-1"></i>Email Address *
                         </label>
+                        <!-- Email input - type="email" provides email format validation -->
                         <input type="email" class="form-control" id="email" name="email" 
                                placeholder="Enter email address" required>
+                        <!-- Validation error message -->
                         <div class="invalid-feedback">
                             Please provide a valid email address.
                         </div>
                     </div>
                     
+                    <!-- Courses field - full width -->
                     <div class="mb-3">
+                        <!-- Label for courses input -->
                         <label for="courses" class="form-label">
+                            <!-- Book icon -->
                             <i class="fas fa-book me-1"></i>Courses *
                         </label>
+                        <!-- Text input for comma-separated course names -->
                         <input type="text" class="form-control" id="courses" name="courses" 
                                placeholder="Enter courses separated by commas (e.g., Math, Science, English)" required>
+                        <!-- Help text explaining the input format -->
                         <div class="form-text">
                             Enter multiple courses separated by commas
                         </div>
+                        <!-- Validation error message -->
                         <div class="invalid-feedback">
                             Please provide at least one course.
                         </div>
                     </div>
                     
+                    <!-- Grades field - full width -->
                     <div class="mb-3">
+                        <!-- Label for grades input -->
                         <label for="grades" class="form-label">
+                            <!-- Chart line icon -->
                             <i class="fas fa-chart-line me-1"></i>Grades *
                         </label>
+                        <!-- Text input for comma-separated numeric grades -->
                         <input type="text" class="form-control" id="grades" name="grades" 
                                placeholder="Enter grades separated by commas (e.g., 85, 92, 78)" required>
+                        <!-- Help text explaining the input format and validation requirement -->
                         <div class="form-text">
                             Enter grades as numbers separated by commas (must match the number of courses)
                         </div>
+                        <!-- Validation error message -->
                         <div class="invalid-feedback">
                             Please provide valid grades.
                         </div>
                     </div>
                     
+                    <!-- Form action buttons container with space between -->
                     <div class="d-flex justify-content-between">
+                        <!-- Back button - links to dashboard/index page -->
                         <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <!-- Left arrow icon -->
                             <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                         </a>
+                        <!-- Submit button - submits form data -->
                         <button type="submit" class="btn btn-primary">
+                            <!-- Save icon -->
                             <i class="fas fa-save me-1"></i>Add Student
                         </button>
                     </div>
@@ -88,18 +132,27 @@
             </div>
         </div>
         
-        <!-- Help Card -->
+        <!-- Help Card - provides tips and guidelines for filling the form -->
         <div class="card mt-4">
+            <!-- Help card header -->
             <div class="card-header">
+                <!-- Header with info icon -->
                 <h6 class="mb-0">
+                    <!-- Info circle icon -->
                     <i class="fas fa-info-circle me-1"></i>Help & Tips
                 </h6>
             </div>
+            <!-- Help card body with guidelines -->
             <div class="card-body">
+                <!-- Unordered list of help items, no bottom margin -->
                 <ul class="mb-0">
+                    <!-- Roll number help text -->
                     <li><strong>Roll Number:</strong> Must be unique for each student</li>
+                    <!-- Courses help text with example -->
                     <li><strong>Courses:</strong> Separate multiple courses with commas (e.g., "Math, Science, English")</li>
+                    <!-- Grades help text with example -->
                     <li><strong>Grades:</strong> Enter numeric values separated by commas (e.g., "85, 92, 78")</li>
+                    <!-- Important validation rule -->
                     <li><strong>Important:</strong> The number of courses must match the number of grades</li>
                 </ul>
             </div>
@@ -107,44 +160,69 @@
     </div>
 </div>
 
+<!-- JavaScript section for client-side validation and interactivity -->
 <script>
+// Wait for DOM to be fully loaded before executing JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Form validation
+    // Form validation setup
+    // Select all forms with needs-validation class
     const forms = document.querySelectorAll('.needs-validation');
+    // Loop through each form
     forms.forEach(function(form) {
+        // Add submit event listener to each form
         form.addEventListener('submit', function(event) {
+            // Check if form is valid using HTML5 validation
             if (!form.checkValidity()) {
+                // Prevent form submission if invalid
                 event.preventDefault();
+                // Stop event from bubbling up
                 event.stopPropagation();
             }
+            // Add was-validated class to show validation feedback
             form.classList.add('was-validated');
         }, false);
     });
 
     // Real-time validation for courses and grades match
+    // Get the courses input element
     const coursesInput = document.getElementById('courses');
+    // Get the grades input element
     const gradesInput = document.getElementById('grades');
     
+    // Function to validate that courses and grades count match
     function validateCoursesAndGrades() {
+        // Get trimmed courses input value
         const coursesStr = coursesInput.value.trim();
+        // Get trimmed grades input value
         const gradesStr = gradesInput.value.trim();
         
+        // Only validate if both fields have values
         if (coursesStr && gradesStr) {
+            // Split courses by comma, trim whitespace, filter out empty strings
             const courses = coursesStr.split(',').map(c => c.trim()).filter(c => c);
+            // Split grades by comma, trim, filter valid numbers
             const grades = gradesStr.split(',').map(g => g.trim()).filter(g => g && !isNaN(parseFloat(g)));
             
+            // Check if counts don't match
             if (courses.length !== grades.length) {
+                // Set custom validation message for courses input
                 coursesInput.setCustomValidity('Number of courses must match number of grades');
+                // Set custom validation message for grades input
                 gradesInput.setCustomValidity('Number of grades must match number of courses');
             } else {
+                // Clear validation messages if counts match
                 coursesInput.setCustomValidity('');
+                // Clear validation message for grades
                 gradesInput.setCustomValidity('');
             }
         }
     }
     
+    // Add input event listener to courses field for real-time validation
     coursesInput.addEventListener('input', validateCoursesAndGrades);
+    // Add input event listener to grades field for real-time validation
     gradesInput.addEventListener('input', validateCoursesAndGrades);
 });
 </script>
+<!-- End of content block -->
 {% endblock %}

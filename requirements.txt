@@ -14,3 +14,11 @@ flask-wtf
 gunicorn
 sqlalchemy
 werkzeug
+email-validator
+flask
+flask-login
+flask-sqlalchemy
+flask-wtf
+gunicorn
+sqlalchemy
+werkzeug

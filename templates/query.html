@@ -1,40 +1,65 @@
+<!-- Extends base.html template to inherit navigation bar, footer, and all CSS styling -->
 {% extends "base.html" %}
 
+<!-- Sets the page title that appears in the browser tab -->
 {% block title %}Query Interface - Student Records{% endblock %}
 
+<!-- Main content block - this replaces the {% block content %} section in base.html -->
 {% block content %}
+<!-- Row container - full width for the query interface -->
 <div class="row">
+    <!-- Column takes full width (12/12 columns) -->
     <div class="col-12">
+        <!-- Card container with gradient background, border, and shadow effects -->
         <div class="card">
+            <!-- Card header section with gradient background -->
             <div class="card-header">
+                <!-- Header title with search icon -->
                 <h4 class="card-title mb-0">
+                    <!-- Font Awesome search icon -->
                     <i class="fas fa-search me-2"></i>SQL-like Query Interface
                 </h4>
             </div>
+            <!-- Card body contains the query form -->
             <div class="card-body">
+                <!-- Form submits via POST method to execute queries on the server -->
                 <form method="POST">
+                    <!-- Form group for query textarea with bottom margin -->
                     <div class="mb-3">
+                        <!-- Label for query textarea with code icon -->
                         <label for="query" class="form-label">
+                            <!-- Font Awesome code icon -->
                             <i class="fas fa-code me-1"></i>Enter your query:
                         </label>
+                        <!-- Textarea for SQL-like query input - font-monospace for code-like appearance -->
+                        <!-- 3 rows height, required field, preserves previous query text via Jinja2 variable -->
                         <textarea class="form-control font-monospace" id="query" name="query" rows="3" 
                                   placeholder="SELECT * FROM students WHERE avg_grade > 80 ORDER BY name"
                                   required>{{ query_text }}</textarea>
+                        <!-- Help text explaining what kind of queries to enter -->
                         <div class="form-text">
                             Enter SQL-like queries to search and filter student records
                         </div>
                     </div>
                     
+                    <!-- Button container with flexbox layout - space-between and center alignment -->
                     <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <!-- Submit button to execute the query -->
                         <button type="submit" class="btn btn-primary">
+                            <!-- Play icon indicating execution action -->
                             <i class="fas fa-play me-1"></i>Execute Query
                         </button>
                         
+                        <!-- Button group for helper actions -->
                         <div class="btn-group" role="group">
+                            <!-- Button to toggle example queries section visibility -->
                             <button type="button" class="btn btn-outline-info" onclick="toggleSamples()">
+                                <!-- Lightbulb icon for ideas/examples -->
                                 <i class="fas fa-lightbulb me-1"></i>Example Queries
                             </button>
+                            <!-- Button to clear the query textarea -->
                             <button type="button" class="btn btn-outline-secondary" onclick="clearQuery()">
+                                <!-- Eraser icon for clear action -->
                                 <i class="fas fa-eraser me-1"></i>Clear
                             </button>
                         </div>
@@ -45,32 +70,47 @@
     </div>
 </div>
 
-<!-- Query Results -->
+<!-- Query Results Section - only displayed when results exist (Jinja2 conditional) -->
 {% if results is defined %}
+<!-- Row container for results with top margin -->
 <div class="row mt-4">
+    <!-- Full-width column -->
     <div class="col-12">
+        <!-- Results card with gradient background and shadow -->
         <div class="card">
+            <!-- Card header with flexbox layout for title and badge -->
             <div class="card-header d-flex justify-content-between align-items-center">
+                <!-- Results title with table icon -->
                 <h5 class="card-title mb-0">
                     <i class="fas fa-table me-2"></i>Query Results
                 </h5>
+                <!-- Badge showing count of results found - conditional count display -->
                 <span class="badge bg-primary">{{ results|length if results else 0 }} records found</span>
             </div>
+            <!-- Card body contains results table or empty message -->
             <div class="card-body">
+                <!-- Conditional: check if results exist and have data -->
                 {% if results and results|length > 0 and results[0] %}
-                        <!-- Simple Query Results Table -->
+                        <!-- Table wrapper for responsive horizontal scrolling -->
                         <div class="table-responsive">
+                            <!-- Dark-themed table with striped rows and hover effects -->
                             <table class="table table-dark table-striped table-hover">
+                                <!-- Table header section -->
                                 <thead>
+                                    <!-- Header row with generic column names -->
                                     <tr>
+                                        <!-- Loop to create column headers based on first result's length -->
                                         {% for i in range(results[0]|length) %}
                                             <th>Column {{ i + 1 }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
+                                <!-- Table body section -->
                                 <tbody>
+                                    <!-- Loop through each result row -->
                                     {% for row in results %}
                                     <tr>
+                                        <!-- Loop through each value in the row -->
                                         {% for value in row %}
                                             <td>{{ value }}</td>
                                         {% endfor %}
@@ -79,10 +119,15 @@
                                 </tbody>
                             </table>
                         </div>
+                <!-- Else clause: if no results found -->
                 {% else %}
+                    <!-- Empty state display with centered content and padding -->
                     <div class="text-center py-4">
+                        <!-- Large muted search icon -->
                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <!-- No results message heading -->
                         <h5 class="text-muted">No results found</h5>
+                        <!-- Help text suggesting to modify query -->
                         <p class="text-muted">Try modifying your query or check the syntax</p>
                     </div>
                 {% endif %}
@@ -92,35 +137,54 @@
 </div>
 {% endif %}
 
-<!-- Sample Queries Section -->
+<!-- Sample Queries Section - hidden by default, toggled by JavaScript -->
 <div id="samplesSection" class="row mt-4" style="display: none;">
+    <!-- Full-width column -->
     <div class="col-12">
+        <!-- Card for example queries -->
         <div class="card">
+            <!-- Card header with flexbox layout for title and close button -->
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Section title with lightbulb icon -->
                 <h5 class="card-title mb-0">
                     <i class="fas fa-lightbulb me-2"></i>Example Queries
                 </h5>
+                <!-- Close button to hide the samples section -->
                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleSamples()">
                     <i class="fas fa-times"></i> Close
                 </button>
             </div>
+            <!-- Card body contains example query cards -->
             <div class="card-body">
+                <!-- Grid layout with gaps between example cards -->
                 <div style="display: grid; gap: 15px;">
+                    <!-- Example 1: Basic Selection - clickable card -->
                     <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT * FROM students')">
+                        <!-- Example title -->
                         <h6 class="mb-1">Basic Selection</h6>
+                        <!-- Query code snippet styled in blue -->
                         <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT * FROM students</code>
+                        <!-- Description of what this query does -->
                         <small class="text-muted">Get all students</small>
                     </div>
                     
+                    <!-- Example 2: Search by Name - clickable card -->
                     <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT * FROM students WHERE name LIKE \'%Alexander%\'')">
+                        <!-- Example title -->
                         <h6 class="mb-1">Search by Name</h6>
+                        <!-- Query code snippet with LIKE operator -->
                         <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT * FROM students WHERE name LIKE '%Alexander%'</code>
+                        <!-- Description explaining the search -->
                         <small class="text-muted">Find students with 'Alexander' in their name</small>
                     </div>
 
+                    <!-- Example 3: Sorted Results - clickable card -->
                     <div style="padding: 15px; background: var(--bg-hover); border-radius: 8px; cursor: pointer;" onclick="useQuery('SELECT roll_no, name, email FROM students ORDER BY name')">
+                        <!-- Example title -->
                         <h6 class="mb-1">Sorted Results</h6>
+                        <!-- Query code snippet with ORDER BY clause -->
                         <code style="display: block; margin-bottom: 8px; color: var(--accent-blue);">SELECT roll_no, name, email FROM students ORDER BY name</code>
+                        <!-- Description explaining the sorting -->
                         <small class="text-muted">Get students sorted by name</small>
                     </div>
                 </div>
@@ -129,19 +193,27 @@
     </div>
 </div>
 
-<!-- Quick Reference Card -->
+<!-- Quick Reference Card - provides documentation for available fields and operators -->
 <div class="row mt-4">
+    <!-- Full-width column -->
     <div class="col-12">
+        <!-- Reference card -->
         <div class="card">
+            <!-- Card header with info icon -->
             <div class="card-header">
                 <h6 class="mb-0">
                     <i class="fas fa-info-circle me-1"></i>Quick Reference
                 </h6>
             </div>
+            <!-- Card body with two-column layout for reference information -->
             <div class="card-body">
+                <!-- Row for two columns -->
                 <div class="row">
+                    <!-- Left column: Available database fields -->
                     <div class="col-md-6">
+                        <!-- Section heading -->
                         <h6>Available Fields:</h6>
+                        <!-- Unordered list without bullets -->
                         <ul class="list-unstyled">
                             <li><code>roll_no</code> - Student roll number</li>
                             <li><code>name</code> - Student name</li>
@@ -149,8 +221,11 @@
                             <li><code>courses</code> - Enrolled courses</li>
                         </ul>
                     </div>
+                    <!-- Right column: Computed/calculated fields -->
                     <div class="col-md-6">
+                        <!-- Section heading -->
                         <h6>Computed Fields:</h6>
+                        <!-- Unordered list without bullets -->
                         <ul class="list-unstyled">
                             <li><code>grades</code> - All grades</li>
                             <li><code>avg_grade</code> - Average grade</li>
@@ -158,14 +233,22 @@
                         </ul>
                     </div>
                 </div>
+                <!-- Horizontal rule separator -->
                 <hr>
+                <!-- Row for operators and logical keywords -->
                 <div class="row">
+                    <!-- Left column: Available comparison operators -->
                     <div class="col-md-6">
+                        <!-- Section heading -->
                         <h6>Operators:</h6>
+                        <!-- Inline code showing all available operators -->
                         <code>=, !=, >, <, >=, <=, LIKE, IN</code>
                     </div>
+                    <!-- Right column: Logical operators -->
                     <div class="col-md-6">
+                        <!-- Section heading -->
                         <h6>Logical:</h6>
+                        <!-- Inline code showing logical keywords -->
                         <code>AND, OR</code>
                     </div>
                 </div>
@@ -173,43 +256,65 @@
         </div>
     </div>
 </div>
+<!-- End of content block -->
 {% endblock %}
 
+<!-- Scripts block for JavaScript functionality -->
 {% block scripts %}
 <script>
+// Function to clear the query textarea
 function clearQuery() {
+    // Get the query textarea element by ID
     document.getElementById('query').value = '';
+    // Set focus to the textarea for immediate typing
     document.getElementById('query').focus();
 }
 
+// Function to toggle the visibility of the samples section
 function toggleSamples() {
+    // Get the samples section element
     const samplesSection = document.getElementById('samplesSection');
+    // Check current display state and toggle between block and none
     if (samplesSection.style.display === 'none') {
+        // Show the section
         samplesSection.style.display = 'block';
     } else {
+        // Hide the section
         samplesSection.style.display = 'none';
     }
 }
 
+// Function to populate the query textarea with a sample query
 function useQuery(queryText) {
+    // Set the textarea value to the clicked example query
     document.getElementById('query').value = queryText;
+    // Hide the samples section after selection
     document.getElementById('samplesSection').style.display = 'none';
+    // Focus on the textarea so user can immediately edit
     document.getElementById('query').focus();
 }
 
-// Syntax highlighting on blur
+// Syntax highlighting on blur - normalizes SQL keywords to uppercase
 document.addEventListener('DOMContentLoaded', function() {
+    // Add blur event listener to query textarea
     document.getElementById('query').addEventListener('blur', function() {
+        // Array of SQL keywords to capitalize
         const sqlKeywords = ['SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'LIMIT', 'AND', 'OR', 'LIKE', 'IN'];
+        // Get current textarea value
         let value = this.value;
         
+        // Loop through each SQL keyword
         sqlKeywords.forEach(keyword => {
+            // Create regex to find keyword (case-insensitive, word boundaries)
             const regex = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'gi');
+            // Replace with uppercase version
             value = value.replace(regex, keyword);
         });
         
+        // Update textarea value with capitalized keywords
         this.value = value;
     });
 });
 </script>
+<!-- End of scripts block -->
 {% endblock %}
