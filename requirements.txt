@@ -6,3 +6,11 @@ flask-wtf>=1.2.2
 gunicorn>=23.0.0
 sqlalchemy>=2.0.0
 werkzeug
+email-validator
+flask
+flask-login
+flask-sqlalchemy
+flask-wtf
+gunicorn
+sqlalchemy
+werkzeug
