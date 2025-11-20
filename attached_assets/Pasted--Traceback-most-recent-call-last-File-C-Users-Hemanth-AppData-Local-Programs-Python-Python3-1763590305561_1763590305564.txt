@@ -1,0 +1,44 @@
+
+Traceback (most recent call last):
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "c:\Users\Hemanth\OneDrive\Desktop\projects\PBL Project - sameer\Student-Records\core\app.py", line 427, in query
+    return render_template('query.html', results=results or [])
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template    
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hemanth\AppData\Local\Programs\Python\Python314\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "c:\Users\Hemanth\OneDrive\Desktop\projects\PBL Project - sameer\Student-Records\templates\query.html", line 320, in template
+    {% endblock %}
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'endblock'. The innermost block that needs to be closed is 'block'.
+10.240.125.142 - - [20/Nov/2025 03:39:00] "GET /query?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+10.240.125.142 - - [20/Nov/2025 03:39:00] "GET /query?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+10.240.125.142 - - [20/Nov/2025 03:39:00] "GET /query?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
